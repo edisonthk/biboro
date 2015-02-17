@@ -52,7 +52,7 @@ border:none;
 
 .lists{
 width:30%;height:110%;
-background-color:#F5E9E9;float:left;
+background-color:#DDD;float:left;
 }
 
 ul li {
@@ -87,7 +87,7 @@ pre{
 padding-left:10px;
 font-size:12px;
 height:200px;width:600px;
-background-color:#F5E9E9;
+background-color:#DDD;
 margin:15px;
 padding-top:10px;padding-bottom:10px;
 overflow:auto;word-wrap: break-word;}
@@ -102,13 +102,13 @@ margin-top:50px;display:block;
 
 .nav-field ul{text-align:right;}
 
-.lists ul li{width:100%; padding-left:10px;}
+.lists ul li{width:90%; padding-left:10px;}
 
 .lists ul {padding-left:0px;}
 
 .lists ul li:hover{
 background-color:#ddd;}
 
-.lists{overflow: scroll;position:fixed;width:30%;top:50px;}
+.lists{overflow: scroll;position:fixed;width:30%;top:52px;}
 
-.detail{overflow: auto;position:fixed;width:70%;top:50px;left:30%;}
+.detail{overflow: auto;position:fixed;width:70%;top:52px;left:30%;}
