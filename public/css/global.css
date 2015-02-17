@@ -50,9 +50,11 @@ padding-left:20px;
 border:none;
 }
 
+.lists,pre{background-color:#e0e0e0;}
+
 .lists{
 width:30%;height:110%;
-background-color:#DDD;float:left;
+background-color:#e0e0e0;float:left;
 }
 
 ul li {
@@ -87,7 +89,6 @@ pre{
 padding-left:10px;
 font-size:12px;
 height:200px;width:600px;
-background-color:#DDD;
 margin:15px;
 padding-top:10px;padding-bottom:10px;
 overflow:auto;word-wrap: break-word;}
