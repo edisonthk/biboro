@@ -8,6 +8,47 @@ var SnippetConstants = require('../constants/SnippetConstants');
 var SnippetStore = require('../stores/SnippetStore');
 
 
+var PreviewArea = React.createClass({
+	render: function() {
+
+		var _style = {
+			width: '200px',
+			height: '200px',
+			backgroundColor: '#3040e0'
+		}
+
+		return (
+			<div className='Preview-area'>
+				<div style={_style} ></div>
+			</div>
+		);
+	}
+});
+
+var TextboxArea = React.createClass({
+
+	render: function() {
+
+		return (
+			<div className='textbox-area'>
+				<div className='input-group'>
+					<label>タイトル</label>
+					<input type='text' placeholder='タイトル' defaultValue={this.props.snippet.title}/>
+				</div>
+				<div className='input-group'>
+					<label>内容</label>
+					<textarea onChange={this.handleChange}>{this.props.snippet.content}</textarea>
+				</div>
+				<div className='input-group'>
+					<label>タグ</label>
+					<input type='text' placeholder='タイトル' defaultValue={this.props.snippet.tags}/>
+				</div>
+			</div>
+		);
+	}
+
+});
+
 
 module.exports = React.createClass({
 
@@ -56,18 +97,8 @@ module.exports = React.createClass({
 
 		return (
 			<div className='editor'>
-				<div className='input-group'>
-					<label>タイトル</label>
-					<input type='text' placeholder='タイトル' defaultValue={this.state.snippet.title}/>
-				</div>
-				<div className='input-group'>
-					<label>内容</label>
-					<textarea onChange={this.handleChange}>{this.state.snippet.content}</textarea>
-				</div>
-				<div className='input-group'>
-					<label>タグ</label>
-					<input type='text' placeholder='タイトル' defaultValue={this.state.snippet.tags}/>
-				</div>
+				<TextboxArea snippet={this.state.snippet} />
+				<PreviewArea snippet={this.state.snippet}/>
 			</div>
 		);
 	}
