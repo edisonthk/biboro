@@ -23,7 +23,7 @@ module.exports = React.createClass({
 	render: function() {
 		return (
 			<div class="searchbox">
-				<input id="keywords" type="text" onKeyUp={this.handleOnKeyUp} refs="input" defaultValue={this.state.value} />
+				<input id="keywords" type="text" onKeyUp={this.handleOnKeyUp} refs="input" defaultValue={this.state.value} placeholder={this.props.placeholder || ''} />
 			</div>
 		);	
 	}

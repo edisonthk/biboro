@@ -18,7 +18,7 @@ var App = React.createClass({
             <Link to="snippets">Home</Link>
           </div>
           <div className="nav-field">
-            <Searchbox />  
+            <Searchbox placeholder="Search ..." />  
             <ul>
               <li><Link to="dashboard">Dashboaffffffrd</Link></li>
               <li><Link to="snippets">Home</Link></li>
@@ -34,7 +34,7 @@ var App = React.createClass({
 var Snippets = React.createClass({
   render: function(){
       return (
-        <div className="snippets-field">
+        <div className='snippets-field'>
           <SnippetList className='lists' />
           <div className='detail'>
             <RouteHandler />
