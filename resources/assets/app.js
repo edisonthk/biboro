@@ -12,11 +12,17 @@ var Searchbox = require('./components/Searchbox');
 var App = React.createClass({
   render: function () {
     return (
-      <div>
-        <ul>
-          <li><Link to="dashboard">Dashboaffffffrd</Link></li>
-          <li><Link to="snippets">Home</Link></li>
-        </ul>
+      <div className="nav">
+        <div className="brand-name">
+          <Link to="snippets">Home</Link>
+        </div>
+        <div className="nav-field">
+          <Searchbox />  
+          <ul>
+            <li><Link to="dashboard">Dashboaffffffrd</Link></li>
+            <li><Link to="snippets">Home</Link></li>
+          </ul>
+        </div>
         <RouteHandler/>
       </div>
     );
@@ -26,10 +32,8 @@ var App = React.createClass({
 var Snippets = React.createClass({
   render: function(){
       return (
-        <div>
-          <h1>Home ffff</h1>
-          <Searchbox />
-          <SnippetList className='nav' />
+        <div className="snippets-field">
+          <SnippetList className='lists' />
           <div className='detail'>
             <RouteHandler />
           </div>
@@ -82,7 +86,6 @@ var routes = (
   <Route handler={App}>
     <DefaultRoute handler={Snippets}/>
     <Route name="dashboard" handler={Dashboard}/>
-    <Route name="form" handler={Form}/>
     <Route name="snippets" handler={Snippets}>
       <Route name="snippet" path="/snippet/:id" handler={SnippetDetail} />
     </Route>
