@@ -34,6 +34,7 @@ module.exports = React.createClass({
 		if(!isEmpty){
 			for(var key in this.state.snippets){
 				var _snippet = this.state.snippets[key];
+				
 				items.push(<li><Link to="snippet" params={{id: _snippet.id}}>{_snippet.title}</Link></li>);
 			}
 		}

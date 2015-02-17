@@ -1,5 +1,7 @@
+// System Library
 var React = require('react');
 
+// Application Library
 var SnippetStore = require('../stores/SnippetStore');
 var KeyConstants = require('../constants/KeyConstants');
 

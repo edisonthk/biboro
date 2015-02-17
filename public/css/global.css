@@ -113,3 +113,8 @@ background-color:#ddd;}
 .lists{overflow: scroll;position:fixed;width:30%;top:52px;}
 
 .detail{overflow: auto;position:fixed;width:70%;top:52px;left:30%;}
+
+
+.editor {
+  margin-top: 50px;
+}
