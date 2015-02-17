@@ -18,69 +18,79 @@ var AuthConstants = require('../constants/AuthConstants');
 // if user is login successful, userinfo will not be null.
 // 
 var _userinfo = null;
+var SIGNIN_SUCCESS_EVENT = "SIGNIN_SUCCESS_EVENT";
 
 var checkIfLogin = function(callback) {
   superagent
-      .get('/account/signin')
+      .get('/account/userinfo')
       .set('Accept', 'application/json')
       .end(function(res) {
-        callback(res);
+        if(!res.ok || res.status != 200){
+          _userinfo = null;
+        }else{
+          _userinfo = res.body;
+          AuthStore.emitSigninSuccess();
+        }
+        if(typeof callback !== 'undefined'){
+          callback(res);  
+        }
       });
-}
+};
+checkIfLogin();
 
 var signin = function() {
 
   if(_userinfo == null){
     checkIfLogin(function(res){
-      console.log(res);
 
-      if(success){
+      if(_userinfo == null){
         // not login yet
         superagent
           .get('/account/signin')
           .set('Accept', 'application/json')
           .end(function(res) {
-            if(res.auth_url){
-              window.location.href=res.auth_url; 
+            console.log(res);
+            if(res.body.auth_url){
+              window.location.href=res.body.auth_url; 
             }else{
               console.error("something wrong in auth");
             } 
           });
       }else{
         // already login
-        _userinfo = res.body;
+        checkIfLogin();
       }
     });
   }else{
     console.log("already signin");
   }
-}
+};
 
 var signout = function() {
   _userinfo = null;
   window.location.href="/account/signout"; 
-}
+};
  
 var AuthStore = assign({}, EventEmitter.prototype, {
   getUserinfo: function() {
     return _userinfo;
   },
   isLogined: function() {
-    return _userinfo && _userinfo !== null;
+    return _userinfo != null;
+  },
+  emitSigninSuccess: function() {
+    this.emit(SIGNIN_SUCCESS_EVENT);
+  },
+  addSigninSuccessListener: function(callback) {
+    this.on(SIGNIN_SUCCESS_EVENT, callback);
+  },
+  removeSigninSuccessListener: function(callback) {
+    this.removeListener(SIGNIN_SUCCESS_EVENT, callback);
   }
-  // emitSigninSuccess: function() {
-  //   this.emit(SIGNIN_SUCCESS_EVENT);
-  // },
-  // addSigninSuccessListener(callback) {
-  //   this.on(SIGNIN_SUCCESS_EVENT, callback);
-  // },
-  // removeSigninSuccessListener(callback) {
-  //   this.removeListener(SIGNIN_SUCCESS_EVENT, callback);
-  // }
 });
  
-AppDispatcher.register(function(payload) {
-  var action = payload.action;
+AppDispatcher.register(function(action) {
+  
   console.log(action);
   switch(action.actionType) {
     case AuthConstants.SIGN_IN:

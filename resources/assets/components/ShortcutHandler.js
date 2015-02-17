@@ -21,8 +21,8 @@ module.exports = React.createClass({
 	shortcutHandler: function(e) {
 		var kwElement = document.getElementById("keywords");
 		var keyPressed = e.keyCode;
-
-		if(this.getRoutes()[1].name === 'editor'){
+		var _routes = this.getRoutes();
+		if(_routes.length > 1 && _routes[1].name === 'editor'){
 			// editor shortcut key handle
 
 		}else{

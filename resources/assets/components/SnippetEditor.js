@@ -41,7 +41,7 @@ var TextboxArea = React.createClass({
 				</div>
 				<div className='input-group'>
 					<label>タグ</label>
-					<input type='text' placeholder='タイトル' defaultValue={this.props.snippet.tags}/>
+					<input type='text' placeholder='タグを入力' defaultValue={this.props.snippet.tags}/>
 				</div>
 			</div>
 		);

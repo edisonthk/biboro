@@ -89,7 +89,7 @@ class SnippetController extends BaseController {
 		unset($result["account_id"]);
 
 		// ユーザの編集権限
-		$result["editable"] = (\Session::has("user") && \Session::get("user")["account_id"] == $snippet->account_id);
+		$result["editable"] = (\Session::has("user") && \Session::get("user")["id"] == $snippet->account_id);
 		
 		return \Response::json($result);
 

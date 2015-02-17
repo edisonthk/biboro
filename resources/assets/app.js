@@ -17,17 +17,34 @@ var AuthStore = require('./stores/AuthStore');
 // App class
 // The main of the whole codegarage application is handle here
 var App = React.createClass({
+  getInitialState: function() {
+    return this.getAuthState();
+  },
+  getAuthState: function() {
+    return {
+      logined: AuthStore.isLogined()
+    };
+  },
+  componentDidMount: function() {
+    AuthStore.addSigninSuccessListener(this._onSigninSuccess);
+  },
+  componentWillUnmount: function() {
+    AuthStore.removeSigninSuccessListener(this._onSigninSuccess);
+  },
+  _onSigninSuccess: function() {
+    this.setState(this.getAuthState());
+  },
   render: function () {
 
     var _secret_tabs = (
-        <li><Link to="sign_in">ログイン</Link></li>
+        <li><a onClick={AuthActions.signIn}>ログイン</a></li>
       );
-    
-    if(AuthStore.isLogined){
+
+    if(this.state.logined){
       _secret_tabs = (
         <div>
           <li><Link to="editor" params={{type: 'new'}}>新規作成</Link></li>
-          <li><Link to="sign_out">ログアウト</Link></li>
+          <li><a onClick={AuthActions.signOut}>ログアウト</a></li>
         </div>
         );
     }
@@ -101,8 +118,6 @@ var Snippets = React.createClass({
 var routes = (
   <Route handler={App}>
     <DefaultRoute handler={Snippets}/>
-    <Route name="sign_in" handler={AuthActions.signIn}/>
-    <Route name="sign_out" handler={AuthActions.signOut}/>
     <Route name="editor" handler={SnippetEditor} />
     <Route name="snippets" handler={Snippets}>
       <Route name="snippet" path="/snippet/:id" handler={SnippetDetail} />
