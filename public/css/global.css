@@ -16,47 +16,99 @@ a.active {
   color: hsl(20, 50%, 50%);
 }
 
-.breadcrumbs a {
+.brand-name a {
   text-decoration: none;
 }
-
-.brand-name{border-bottom:2px solid #666;
+.brand-name  a:link {color: #666;}
+.brand-name{
+border-bottom:2px solid #666;
 width:30%;height:50px;
-background-color:white;display:inline-block;
+background-color:white;
+display:inline-block;
 text-align:center;
-vertical-align:top;}
-.nav-field{width:calc(70% - 10px);height:50px;background-color:white;display:inline-block;border-bottom:2px solid rgb(3, 156, 250);-webkit-box-shadow:inset 7px 0px 15px -10px rgba(0,0,0,0.75);
+vertical-align:top;
+}
+
+.brand-name a{text-align:center;
+	vertical-align:middle;
+	line-height:50px;}
+.nav-field{
+width:calc(70% - 10px);height:50px;
+background-color:white;display:inline-block;
+border-bottom:2px solid rgb(3, 156, 250);
+-webkit-box-shadow:inset 7px 0px 15px -10px rgba(0,0,0,0.75);
 -moz-box-shadow:inset 7px 0px 15px -10px rgba(0,0,0,0.75);
-box-shadow:inset 7px 0px 15px -10px rgba(0,0,0,0.75);padding-left:10px;}
+box-shadow:inset 7px 0px 15px -10px rgba(0,0,0,0.75);
+padding-left:10px;
+}
 
 input{
 height:50px;width:200px;
 vertical-align:top;display:inline-block;
 background:url(http://www.starbucks.co.jp/common/images/img-icon-search.png?eddff36ec4) no-repeat;background-position:0% center;
 padding-left:20px;
-border:none;}
+border:none;
+}
 
-.lists{width:30%;height:110%;background-color:#dfdfdf;float:left;}
+.lists{
+width:30%;height:110%;
+background-color:#F5E9E9;float:left;
+}
+
 ul li {
-background-color:dfdfdf;
-border-color:white;
+border-color:black;
 height:50px;
 display:inline-block;
-margin-left:0px;
 }
-ul{width:200px;height:50px;display:inline-block;}
 
-.nav-field > div{display:inline;}
-.detail{width:70%;height:600px;background-color:white;float:right;}
-pre{padding-left:10px;
+.nav-field ul li{border-left:2px solid #ccc;padding-left:10px;padding-right:10px;}
+
+.nav-field ul{
+width:200px;height:50px;float:right;margin-top:0px;}
+
+.nav-field ul li a{padding-top:10px;top:50%;text-decoration: none;text-align:center;
+	vertical-align:middle;
+	line-height:50px;}
+
+.nav-field ul li a:link {color: #666;}
+
+ a:link {color: #666;}
+a{text-decoration: none;}
+.nav-field > div{
+display:inline;
+}
+
+.detail{
+width:70%;height:600px;
+background-color:white;float:right;
+}
+
+pre{
+padding-left:10px;
 font-size:12px;
-height:200px;
-background-color:#dfdfdf;
+height:200px;width:600px;
+background-color:#F5E9E9;
 margin:15px;
-padding-top:10px;
-padding-bottom:10px;
-width:600px;
-overflow:auto;}
+padding-top:10px;padding-bottom:10px;
+overflow:auto;word-wrap: break-word;}
 
-.nav{position:fixed;width:100%;top:0;}
-.snippets-field{margin-top:50px;display:block;}
+.nav{
+position:fixed;width:100%;top:0;
+}
+
+.snippets-field{
+margin-top:50px;display:block;
+}
+
+.nav-field ul{text-align:right;}
+
+.lists ul li{width:100%; padding-left:10px;}
+
+.lists ul {padding-left:0px;}
+
+.lists ul li:hover{
+background-color:#ddd;}
+
+.lists{overflow: scroll;position:fixed;width:30%;top:50px;}
+
+.detail{overflow: auto;position:fixed;width:70%;top:50px;left:30%;}
