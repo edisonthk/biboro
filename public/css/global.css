@@ -1,6 +1,7 @@
 body {
   font-family: "Helvetica Neue", Arial;
   font-weight: 200;
+  margin-top: 0;margin-left: 0;margin-right: 0;margin-bottom: 0;
 }
 
 h1, h2, h3 {
@@ -18,3 +19,44 @@ a.active {
 .breadcrumbs a {
   text-decoration: none;
 }
+
+.brand-name{border-bottom:2px solid #666;
+width:30%;height:50px;
+background-color:white;display:inline-block;
+text-align:center;
+vertical-align:top;}
+.nav-field{width:calc(70% - 10px);height:50px;background-color:white;display:inline-block;border-bottom:2px solid rgb(3, 156, 250);-webkit-box-shadow:inset 7px 0px 15px -10px rgba(0,0,0,0.75);
+-moz-box-shadow:inset 7px 0px 15px -10px rgba(0,0,0,0.75);
+box-shadow:inset 7px 0px 15px -10px rgba(0,0,0,0.75);padding-left:10px;}
+
+input{
+height:50px;width:200px;
+vertical-align:top;display:inline-block;
+background:url(http://www.starbucks.co.jp/common/images/img-icon-search.png?eddff36ec4) no-repeat;background-position:0% center;
+padding-left:20px;
+border:none;}
+
+.lists{width:30%;height:110%;background-color:#dfdfdf;float:left;}
+ul li {
+background-color:dfdfdf;
+border-color:white;
+height:50px;
+display:inline-block;
+margin-left:0px;
+}
+ul{width:200px;height:50px;display:inline-block;}
+
+.nav-field > div{display:inline;}
+.detail{width:70%;height:600px;background-color:white;float:right;}
+pre{padding-left:10px;
+font-size:12px;
+height:200px;
+background-color:#dfdfdf;
+margin:15px;
+padding-top:10px;
+padding-bottom:10px;
+width:600px;
+overflow:auto;}
+
+.nav{position:fixed;width:100%;top:0;}
+.snippets-field{margin-top:50px;display:block;}
