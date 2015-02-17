@@ -11,14 +11,19 @@ class AccountController extends BaseController {
 	const COOKIE_ALREADY_LOGIN_VALUE = "1";
 	const COOKIE_ALREADY_LOGIN_TIME = 10080; // unit in minutes, 1440 * 7 = 10080 = one week
 
-				//method+URI
+	const _SERVICE = 'Google';
+
 	public function getSignin()
 	{	
-		
-		$google = \OAuth::consumer('Google','http://'.$_SERVER['HTTP_HOST'].'/account/oauth2callback');
-		$url = (String)$google->getAuthorizationUri();
+		// user already login
+		if(\Session::has("user")){
+			return \Response::json([]);
+		}
 
-		// var_dump($authUrl);
+		// retrieve authorization uri for login
+		$googleService = \OAuth::consumer(self::_SERVICE,'http://'.$_SERVER['HTTP_HOST'].'/account/oauth2callback');
+		$url = (String)$googleService->getAuthorizationUri();
+	
 		return \Response::json(["auth_url" => $url]);
 	}
 	// public function postLogin()
@@ -29,10 +34,17 @@ class AccountController extends BaseController {
 	// }
 
 
+	public function getUserinfo()
+	{
+		if(\Session::has("user")){
+			return \Response::json(\Session::get("user"), 200);
+		}else{
+			return \Response::json(null , 403);
+		}
+	}
 
 	public function getSignout()
 	{
-		\GoogleOAuth::logout();
 		\Session::forget("user");
 		
         return redirect("/#/snippets");
@@ -40,7 +52,7 @@ class AccountController extends BaseController {
 
 	public function getOauth2callback()
 	{
-		$googleService = \GoogleOAuth::consumer();
+		$googleService = \OAuth::consumer(self::_SERVICE);
 
         if(\Request::has("code")){
             $code = \Request::get("code");
@@ -48,10 +60,10 @@ class AccountController extends BaseController {
             return redirect("/account/oauth2callback");
         }
 
-        if(!\GoogleOAuth::hasAuthorized()){
-        	// fail to authorized
-            die("Not authorized yet");
-        }
+        // if(!\GoogleOAuth::hasAuthorized()){
+        // 	// fail to authorized
+        //     die("Not authorized yet");
+        // }
 
 
         $result = json_decode( $googleService->request( 'https://www.googleapis.com/oauth2/v1/userinfo' ), true );
@@ -73,8 +85,8 @@ class AccountController extends BaseController {
         	$account->save();
         }
         
-        $result["account_id"] = $account->id;
-        \Cookie::queue(self::COOKIE_ALREADY_LOGIN_KEY,self::COOKIE_ALREADY_LOGIN_VALUE, self::COOKIE_ALREADY_LOGIN_TIME);
+        $result["id"] = $account->id;
+        
         \Session::put('user', $result);
         return redirect('/#/snippets');
 	}

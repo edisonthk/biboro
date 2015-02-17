@@ -11,11 +11,27 @@ var SnippetDetail = require('./components/SnippetDetail');
 var Searchbox = require('./components/Searchbox');
 var SnippetEditor = require('./components/SnippetEditor');
 var SnippetConstants = require('./constants/SnippetConstants');
+var AuthActions = require('./actions/AuthActions');
+var AuthStore = require('./stores/AuthStore');
 
 // App class
 // The main of the whole codegarage application is handle here
 var App = React.createClass({
   render: function () {
+
+    var _secret_tabs = (
+        <li><Link to="sign_in">ログイン</Link></li>
+      );
+    
+    if(AuthStore.isLogined){
+      _secret_tabs = (
+        <div>
+          <li><Link to="editor" params={{type: 'new'}}>新規作成</Link></li>
+          <li><Link to="sign_out">ログアウト</Link></li>
+        </div>
+        );
+    }
+
     return (
       <div className="app">
         <ShortcutHandler />
@@ -26,8 +42,7 @@ var App = React.createClass({
           <div className="nav-field">
             <Searchbox placeholder="Search ..." />  
             <ul>
-              <li><Link to="editor" params={{type: 'new'}}>新規作成</Link></li>
-              <li><Link to="snippets">Home</Link></li>
+              {_secret_tabs}
             </ul>
           </div>
         </div>
@@ -86,6 +101,8 @@ var Snippets = React.createClass({
 var routes = (
   <Route handler={App}>
     <DefaultRoute handler={Snippets}/>
+    <Route name="sign_in" handler={AuthActions.signIn}/>
+    <Route name="sign_out" handler={AuthActions.signOut}/>
     <Route name="editor" handler={SnippetEditor} />
     <Route name="snippets" handler={Snippets}>
       <Route name="snippet" path="/snippet/:id" handler={SnippetDetail} />

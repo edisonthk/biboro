@@ -1,51 +1,95 @@
-var AppDispatcher = require('../AppDispatcher');
+// Node modules
 var EventEmitter = require('events').EventEmitter;
-var ActionTypes = require('../constants/ActionTypes');
-var merge = require('react/lib/merge');
-var AuthActions = require('../actions/AuthActions');
-var config = require('../config');
 var superagent = require('superagent');
+var assign = require('object-assign');
+
+
+// React modules
+var React = require('react');
+var Router = require('react-router');
+var { Route, DefaultRoute, RouteHandler, Link } = Router;
+
+
+// Application modules
+var AppDispatcher = require('../dispatcher/AppDispatcher');
+var AuthActions = require('../actions/AuthActions');
+var AuthConstants = require('../constants/AuthConstants');
  
-var SIGNIN_SUCCESS_EVENT = 'signinSuccess';
- 
-function signin(data) {
- 
+// if user is login successful, userinfo will not be null.
+// 
+var _userinfo = null;
+
+var checkIfLogin = function(callback) {
   superagent
-    .post(config.apiRoot + '/signin')
-    .send(data)
-    .set('Accept', 'application/json')
-    .end(function(res) {
-      if (res.ok) {
-         AuthActions.signinSuccess({});
-       } else {
- 
-       }
+      .get('/account/signin')
+      .set('Accept', 'application/json')
+      .end(function(res) {
+        callback(res);
+      });
+}
+
+var signin = function() {
+
+  if(_userinfo == null){
+    checkIfLogin(function(res){
+      console.log(res);
+
+      if(success){
+        // not login yet
+        superagent
+          .get('/account/signin')
+          .set('Accept', 'application/json')
+          .end(function(res) {
+            if(res.auth_url){
+              window.location.href=res.auth_url; 
+            }else{
+              console.error("something wrong in auth");
+            } 
+          });
+      }else{
+        // already login
+        _userinfo = res.body;
+      }
     });
- 
+  }else{
+    console.log("already signin");
+  }
+}
+
+var signout = function() {
+  _userinfo = null;
+  window.location.href="/account/signout"; 
 }
  
-var AuthStore = merge(EventEmitter.prototype, {
-  emitSigninSuccess: function() {
-    this.emit(SIGNIN_SUCCESS_EVENT);
+var AuthStore = assign({}, EventEmitter.prototype, {
+  getUserinfo: function() {
+    return _userinfo;
   },
-  addSigninSuccessListener(callback) {
-    this.on(SIGNIN_SUCCESS_EVENT, callback);
-  },
-  removeSigninSuccessListener(callback) {
-    this.removeListener(SIGNIN_SUCCESS_EVENT, callback);
+  isLogined: function() {
+    return _userinfo && _userinfo !== null;
   }
+  // emitSigninSuccess: function() {
+  //   this.emit(SIGNIN_SUCCESS_EVENT);
+  // },
+  // addSigninSuccessListener(callback) {
+  //   this.on(SIGNIN_SUCCESS_EVENT, callback);
+  // },
+  // removeSigninSuccessListener(callback) {
+  //   this.removeListener(SIGNIN_SUCCESS_EVENT, callback);
+  // }
 });
  
 AppDispatcher.register(function(payload) {
   var action = payload.action;
- 
+  console.log(action);
   switch(action.actionType) {
-    case ActionTypes.AUTH_SIGNIN:
-      signin(action.data);
+    case AuthConstants.SIGN_IN:
+      signin();
       break;
  
-    case ActionTypes.AUTH_SIGNIN_SUCCESS:
-      AuthStore.emitSigninSuccess();
+    case AuthConstants.SIGN_OUT:
+      signout();
+      break;
     default:
       return true;
   }
