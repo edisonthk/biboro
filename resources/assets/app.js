@@ -12,16 +12,18 @@ var Searchbox = require('./components/Searchbox');
 var App = React.createClass({
   render: function () {
     return (
-      <div className="nav">
-        <div className="brand-name">
-          <Link to="snippets">Home</Link>
-        </div>
-        <div className="nav-field">
-          <Searchbox />  
-          <ul>
-            <li><Link to="dashboard">Dashboaffffffrd</Link></li>
-            <li><Link to="snippets">Home</Link></li>
-          </ul>
+      <div className="app">
+        <div className="nav">
+          <div className="brand-name">
+            <Link to="snippets">Home</Link>
+          </div>
+          <div className="nav-field">
+            <Searchbox />  
+            <ul>
+              <li><Link to="dashboard">Dashboaffffffrd</Link></li>
+              <li><Link to="snippets">Home</Link></li>
+            </ul>
+          </div>
         </div>
         <RouteHandler/>
       </div>
