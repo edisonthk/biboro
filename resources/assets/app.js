@@ -37,14 +37,14 @@ var App = React.createClass({
   render: function () {
 
     var _secret_tabs = (
-        <li><a onClick={AuthActions.signIn}>ログイン</a></li>
+        <li><button onClick={AuthActions.signIn}>ログイン</button></li>
       );
 
     if(this.state.logined){
       _secret_tabs = (
         <div>
           <li><Link to="editor" params={{type: 'new'}}>新規作成</Link></li>
-          <li><a onClick={AuthActions.signOut}>ログアウト</a></li>
+          <li><button onClick={AuthActions.signOut}>ログアウト</button></li>
         </div>
         );
     }

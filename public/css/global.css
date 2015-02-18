@@ -66,18 +66,26 @@ display:inline-block;
 .nav-field ul li{border-left:2px solid #ccc;padding-left:10px;padding-right:10px;}
 
 .nav-field ul{
-width:200px;height:50px;float:right;margin-top:0px;}
+  width:200px;
+  height:50px;
+  float:right;
+  margin-top:0px;
+}
 
-.nav-field ul li a{padding-top:10px;top:50%;text-decoration: none;text-align:center;
+.nav-field ul li a, .nav-field ul li button {
+  padding-top:10px;
+  top:50%;
+  text-decoration: none;
+  text-align:center;
 	vertical-align:middle;
-	line-height:50px;}
+	line-height:50px;
+}
 
-.nav-field ul li a:link {color: #666;}
+.nav-field ul li a:link, .nav-field ul li button {color: #666;}
 
- a:link {color: #666;}
-a{text-decoration: none;}
+a {text-decoration: none;}
 .nav-field > div{
-display:inline;
+  display:inline;
 }
 
 .detail{
