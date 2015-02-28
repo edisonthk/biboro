@@ -4,10 +4,11 @@ var assign = require('object-assign');
 
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var SnippetConstants = require('../constants/SnippetConstants');
-var StoreHelper = require('./StoreHelper');
+var RequestHelper = require('./RequestHelper');
 
-
-var CHANGE_EVENT = 'change';
+var SINGLE_SNIPPET_LOADED = 'single_snippet_loaded';
+var SNIPPETS_LIST_LOADED = 'snippets_list_loaded';
+// var CHANGE_EVENT = 'change';
 
 var _snippets = {};
 
@@ -16,14 +17,19 @@ var _snippets = {};
  * Create a snippet
  * @param  {string} text The content of the snippet
  */
-function create(text) {
-  
-  // _todos[id] = {
-  //   id: id,
-  //   complete: false,
-  //   text: text
-  // };
-  console.log("create");
+function create(snippet, cb) {
+  RequestHelper.post('/json/snippet', snippet, function(err, res){
+    if(!err){
+      _snippets[parseInt(res.id)] = {
+        title: res.title,
+        content: res.content,
+        tags: res.tags
+      };
+
+      console.log(_snippets[parseInt(res.id)]);
+    }
+    cb(err,res);
+  });
 }
 
 /**
@@ -32,16 +38,30 @@ function create(text) {
  * @param {object} updates An object literal containing only the data to be
  *     updated.
  */
-function update(id, updates) {
-  _todos[id] = assign({}, _todos[id], updates);
+function update(id, snippet, cb) {
+  if(id.match(/[0-9]+/)){
+    RequestHelper.put('/json/snippet/'+id, snippet, function(err, res){
+      if(!err){
+        _snippets[res.id] = res;
+      }
+      cb(err,res);
+    });
+  }
 }
 
 /**
  * Delete a TODO item.
  * @param  {string} id
  */
-function destroy(id) {
-  delete _todos[id];
+function destroy(id, cb) {
+  if(id.match(/[0-9]+/)){
+    RequestHelper.delete('/json/snippet/'+id, function(err, res){
+      if(!err){
+        delete _snippets[id];
+      }
+      cb(err,res);
+    });
+  }
 }
 
 // assign method is "object-assign" Class
@@ -70,45 +90,55 @@ var SnippetStore = assign({}, EventEmitter.prototype, {
   },
 
   // query data from server and update local/memory data
-  load: function(id) {
+  load: function(id, cb) {
     var _t = this;
   	if(typeof id === 'undefined'){
   		// load all snippets
-  		StoreHelper.readMultipleItems('/json/snippet/', function(err, res){
-        if(res.forEach){
-          _snippets = {};
-          res.forEach(function(snippet){
-            _snippets[snippet.id] = snippet;
-          });
+  		RequestHelper.get('/json/snippet/', function(err, res){
+        if(err){
+          return;
         }
-  			_t.emitChange();
+        _snippets = {};
+        res.forEach(function(snippet){
+          _snippets[snippet.id] = snippet;
+        });
+  			_t.emitChange(SNIPPETS_LIST_LOADED);
+
   		});
   	}else{
   		// load specific id
-  		StoreHelper.readSingleItem('/json/snippet/'+id, function(err, res){
+  		RequestHelper.get('/json/snippet/'+id, function(err, res){
+        if(err){
+          return;
+        }
         _snippets[id] = res;
-        _t.emitChange();
+        _t.emitChange(SINGLE_SNIPPET_LOADED);
   		});
   	}
   },
 
-  emitChange: function() {
-    this.emit(CHANGE_EVENT);
+  emitChange: function(change_event) {
+    this.emit(change_event);
   },
 
   /**
-   * @param {function} callback
+   *  adding or removing onChange Listener for SingleSnippetLoaded and SnippetsListLoaded
    */
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
+  addSingleSnippetLoadedListener: function(callback) {
+    this.on(SINGLE_SNIPPET_LOADED, callback);
+  },
+  removeSingleSnippetLoadedListener: function(callback) {
+    this.removeListener(SINGLE_SNIPPET_LOADED, callback);
   },
 
-  /**
-   * @param {function} callback
-   */
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
+  addSnippetsListLoadedListener: function(callback) {
+    this.on(SNIPPETS_LIST_LOADED, callback);
+  },  
+
+  removeSnippetsListLoadedListener: function(callback) {
+    this.removeListener(SNIPPETS_LIST_LOADED, callback);
   }
+
 });
 
 // 
@@ -120,24 +150,43 @@ AppDispatcher.register(function(action) {
 
   switch(action.actionType) {
     case SnippetConstants.SNIPPET_CREATE:
-      text = action.text.trim();
       if (text !== '') {
-        create(text);
+        create({
+          title: action.title.trim(), 
+          content: action.content, 
+          tags: action.tags 
+        } , function(err, res){
+          SnippetStore.emitChange(SNIPPETS_LIST_LOADED);
+          if(typeof action.callback === 'function'){
+            action.callback(err, res);
+          }
+        });
       }
       SnippetStore.emitChange();
       break;
 
     case SnippetConstants.SNIPPET_UPDATE:
-      text = action.text.trim();
-      if (text !== '') {
-        update(action.id, {text: text});
-      }
+      update(action.id,{
+        title: action.title, 
+        content: action.content, 
+        tags: action.tags 
+      } , function(err, res){
+        SnippetStore.emitChange(SINGLE_SNIPPET_LOADED);
+        SnippetStore.emitChange(SNIPPETS_LIST_LOADED);
+        if(typeof action.callback === 'function'){
+          action.callback(err, res);
+        }
+      });
       SnippetStore.emitChange();
       break;
 
     case SnippetConstants.SNIPPET_DESTROY:
-      destroy(action.id);
-      SnippetStore.emitChange();
+      destroy(action.id, function(err, res){
+        SnippetStore.emitChange(SNIPPETS_LIST_LOADED);
+        if(typeof action.callback === 'function'){
+          action.callback(err, res);
+        }
+      });
       break;
 
     default:

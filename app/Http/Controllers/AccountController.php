@@ -33,6 +33,13 @@ class AccountController extends BaseController {
 		// return View::make('/account/login',[$my_account = $accounts]);
 	// }
 
+	public function getDevSignin()
+	{
+		$result = Account::find(1);
+		\Session::put('user', $result);	
+		return redirect('/#/snippets');
+	}
+
 
 	public function getUserinfo()
 	{

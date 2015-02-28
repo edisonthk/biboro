@@ -17,12 +17,14 @@ module.exports = React.createClass({
 		return getStateFromStores();
 	},
 	componentDidMount: function() {
-		SnippetStore.addChangeListener(this._onChange);
+		SnippetStore.addSnippetsListLoadedListener(this._onChange);
 	},
 	componentWillUnmount: function() {
-		SnippetStore.removeChangeListener(this._onChange);
+		SnippetStore.removeSnippetsListLoadedListener(this._onChange);
 	},
 	_onChange: function() {
+		console.log("_onChange");
+		console.log(getStateFromStores());
 		this.setState(getStateFromStores());
 	},
 	render: function(){
@@ -36,8 +38,9 @@ module.exports = React.createClass({
 		if(!isEmpty){
 			for(var key in this.state.snippets){
 				var _snippet = this.state.snippets[key];
-				
-				items.push(<li><Link to="snippet" params={{id: _snippet.id}}>{_snippet.title}</Link></li>);
+				if(_snippet){
+					items[_snippet.id] = (<li><Link to="snippet" params={{id: _snippet.id}}>{_snippet.title}</Link></li>);
+				}
 			}
 		}
 

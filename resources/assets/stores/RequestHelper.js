@@ -2,7 +2,7 @@ var request = require("superagent");
 
 module.exports = {
 	
-	writeAndReadSingleItem: function (path, data , resultHandler) {
+	post: function (path, data , resultHandler) {
 		resultHandler = resultHandler || function(result) { return result; };
 		request.post(path)
 			.set("Accept", "application/json")
@@ -16,7 +16,21 @@ module.exports = {
 			});
 	},
 
-	readSingleItem: function (path, resultHandler) {
+	put: function (path, data , resultHandler) {
+		resultHandler = resultHandler || function(result) { return result; };
+		request.put(path)
+			.set("Accept", "application/json")
+			.type("json")
+			.send(data)
+			.end(function(err, res) {
+				if(err) return resultHandler(err);
+				if(res.status !== 200)
+					return resultHandler(new Error("Request failed with " + res.status + ": " + res.text), res.body);
+				resultHandler(null, res.body);
+			});
+	},
+
+	get: function (path, resultHandler) {
 		resultHandler = resultHandler || function(result) { return result; };
 		request.get(path)
 			.set("Accept", "application/json")
@@ -29,9 +43,9 @@ module.exports = {
 			});
 	},
 
-	readMultipleItems: function (path, resultHandler) {
+	delete: function (path, resultHandler) {
 		resultHandler = resultHandler || function(result) { return result; };
-		request.get(path)
+		request.del(path)
 			.set("Accept", "application/json")
 			.type("json")
 			.end(function(err, res) {
@@ -40,6 +54,6 @@ module.exports = {
 					return resultHandler(new Error("Request failed with " + res.status + ": " + res.text), res.body);
 				resultHandler(null, res.body);
 			});
-	}
+	},
 
 };

@@ -19,11 +19,9 @@ class SnippetController extends BaseController {
 
 		$snippets = array();
 		foreach (Snippet::orderBy('updated_at','desc')->get(['id','title','updated_at']) as $snippet) {		//条件付けのときは->get()が必要
-			$temp = $snippet->toArray();
-			$temp["updated_at"] = $this->convertToUserView($temp["updated_at"]);
-			$temp["tags"] = $snippet->tags()->getResults()->toArray();
 
-			array_push($snippets, $temp); 
+			array_push($snippets, $this->beautifySnippetObject($snippet)); 
+
 		}
 		
 		return \Response::json($snippets);
@@ -61,14 +59,15 @@ class SnippetController extends BaseController {
 			$snippet->content     	= \Input::get('content');
 			$snippet->timestamps 	= true;
 			$snippet->lang 			= "jp";
-			$snippet->account_id 	= \Session::get("user")["account_id"];
+			$snippet->account_id 	= \Session::get("user")["id"];
 
 			$snippet->save();
 
 			$snippet->tagsave($inputs["tags"]);
 
 		
-			return \Response::json($snippet->toArray());
+			$result = $this->beautifySnippetObject($snippet);
+			return \Response::json($result);
 		}
 	}
 
@@ -83,13 +82,9 @@ class SnippetController extends BaseController {
 	{
 		//
 		$snippet= Snippet::find($id);
-		$result = $snippet->toArray();
-		$result["tags"] = $snippet->tags()->getResults()->toArray();
-		$result["creator_name"] = $snippet->getCreatorName();
-		unset($result["account_id"]);
 
-		// ユーザの編集権限
-		$result["editable"] = (\Session::has("user") && \Session::get("user")["id"] == $snippet->account_id);
+		$result = $this->beautifySnippetObject($snippet);
+		
 		
 		return \Response::json($result);
 
@@ -156,7 +151,9 @@ class SnippetController extends BaseController {
 
 			// redirect
 			\Session::flash('message', 'Successfully created snippet!');
-			return \Response::json('snippet');
+
+			$result = $this->beautifySnippetObject($snippet);
+			return \Response::json($result);
 		}
 	}
 
@@ -251,7 +248,7 @@ class SnippetController extends BaseController {
 
 			$new_snippet_result = [];
 			foreach ($snippets_result as $value) {
-				$value["updated_at"] = $this->convertToUserView($value["updated_at"]);
+				$value["updated_at"] = $this->convertToUserViewTimestamp($value["updated_at"]);
 				array_push($new_snippet_result, $value);
 			}
 			// array_multisort($updated_at,SORT_ASC,SORT_NATURAL,$snippets_result);
@@ -271,7 +268,17 @@ class SnippetController extends BaseController {
 		file_put_contents($fileName,$outputkw,FILE_APPEND | LOCK_EX);
 	}
 
-	private function convertToUserView($timestamp){
+	private function beautifySnippetObject($snippet){
+		$temp = $snippet->toArray();
+		$temp["updated_at"] = $this->convertToUserViewTimestamp($temp["updated_at"]);
+		$temp["tags"] = $snippet->tags()->getResults()->toArray();
+		$temp["creator_name"] = $snippet->getCreatorName();
+		$temp["editable"] = (\Session::has("user") && \Session::get("user")["id"] == $snippet->account_id);
+		
+		return $temp;
+	}
+
+	private function convertToUserViewTimestamp($timestamp){
 	    $d1 = new \DateTime($timestamp);
 	    $n = new \DateTime("now");
 	    $diff = $d1->diff($n);

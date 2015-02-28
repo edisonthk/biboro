@@ -13,6 +13,7 @@ var SnippetEditor = require('./components/SnippetEditor');
 var SnippetConstants = require('./constants/SnippetConstants');
 var AuthActions = require('./actions/AuthActions');
 var AuthStore = require('./stores/AuthStore');
+var SnippetDashboard = require('./components/SnippetDashboard');
 
 // App class
 // The main of the whole codegarage application is handle here
@@ -41,14 +42,13 @@ var App = React.createClass({
       );
 
     if(this.state.logined){
-      _secret_tabs = (
-        <div>
-          <li><Link to="editor" params={{type: 'new'}}>新規作成</Link></li>
-          <li><button onClick={AuthActions.signOut}>ログアウト</button></li>
-        </div>
-        );
+      _secret_tabs = [
+        (<li><Link to="editor" params={{type: 'new'}}>新規作成</Link></li>),
+        (<li><button onClick={AuthActions.signOut}>ログアウト</button></li>)
+      ];
     }
 
+    // If 
     return (
       <div className="app">
         <ShortcutHandler />
@@ -71,6 +71,7 @@ var App = React.createClass({
 
 var Snippets = React.createClass({
   render: function(){
+    //　
       return (
         <div className='snippets-field'>
           <SnippetList className='lists' />
@@ -82,44 +83,16 @@ var Snippets = React.createClass({
     }
 });
 
-// var Form = React.createClass({
-
-//   mixins: [ Router.Navigation ],
-
-//   statics: {
-//     willTransitionFrom: function (transition, element) {
-//       if (element.refs.userInput.getDOMNode().value !== '') {
-//         if (!confirm('You have unsaved information, are you sure you want to leave this page?')) {
-//           transition.abort();
-//         }
-//       }
-//     }
-//   },
-
-//   handleSubmit: function (event) {
-//     event.preventDefault();
-//     this.refs.userInput.getDOMNode().value = '';
-//     this.transitionTo('/');
-//   },
-
-//   render: function () {
-//     return (
-//       <div>
-//         <form onSubmit={this.handleSubmit}>
-//           <p>Click the dashboard link with text in the input.</p>
-//           <input type="text" ref="userInput" defaultValue="ohai" />
-//           <button type="submit">Go</button>
-//         </form>
-//       </div>
-//     );
-//   }
-// });
-
 var routes = (
   <Route handler={App}>
     <DefaultRoute handler={Snippets}/>
-    <Route name="editor" handler={SnippetEditor} />
+
+    <Route name="editor" handler={SnippetEditor} >
+      <Route name="editor_update" path="/editor/snippet/:id" />
+    </Route>
+
     <Route name="snippets" handler={Snippets}>
+      <DefaultRoute handler={SnippetDashboard} />
       <Route name="snippet" path="/snippet/:id" handler={SnippetDetail} />
     </Route>
   </Route>

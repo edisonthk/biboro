@@ -1,7 +1,6 @@
 // Node modules
 var EventEmitter = require('events').EventEmitter;
-var superagent = require('superagent');
-var assign = require('object-assign');
+var Assign = require('object-assign');
 
 
 // React modules
@@ -14,6 +13,7 @@ var { Route, DefaultRoute, RouteHandler, Link } = Router;
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var AuthActions = require('../actions/AuthActions');
 var AuthConstants = require('../constants/AuthConstants');
+var RequestHelper = require('./RequestHelper');
  
 // if user is login successful, userinfo will not be null.
 // 
@@ -21,20 +21,18 @@ var _userinfo = null;
 var SIGNIN_SUCCESS_EVENT = "SIGNIN_SUCCESS_EVENT";
 
 var checkIfLogin = function(callback) {
-  superagent
-      .get('/account/userinfo')
-      .set('Accept', 'application/json')
-      .end(function(res) {
-        if(!res.ok || res.status != 200){
-          _userinfo = null;
-        }else{
-          _userinfo = res.body;
-          AuthStore.emitSigninSuccess();
-        }
-        if(typeof callback !== 'undefined'){
-          callback(res);  
-        }
-      });
+  RequestHelper.get('/account/userinfo',function(err, res){
+    if(err){
+      _userinfo = null;
+    }else{
+      _userinfo = res;
+      AuthStore.emitSigninSuccess();
+    }
+
+    if(typeof callback !== 'undefined'){
+      callback(err, res);  
+    }
+  });
 };
 checkIfLogin();
 
@@ -45,19 +43,15 @@ var signin = function() {
 
       if(_userinfo == null){
         // not login yet
-        superagent
-          .get('/account/signin')
-          .set('Accept', 'application/json')
-          .end(function(res) {
-            console.log(res);
-            if(res.body.auth_url){
-              window.location.href=res.body.auth_url; 
-            }else{
-              console.error("something wrong in auth");
-            } 
-          });
+        RequestHelper.get('/account/signin', function(err, res){
+          if(res.auth_url){
+            window.location.href=res.auth_url; 
+          }else{
+            console.error("something wrong in auth");
+          } 
+        });
       }else{
-        // already login
+        // maybe already logined, check server if user session is available
         checkIfLogin();
       }
     });
@@ -71,7 +65,7 @@ var signout = function() {
   window.location.href="/account/signout"; 
 };
  
-var AuthStore = assign({}, EventEmitter.prototype, {
+var AuthStore = Assign({}, EventEmitter.prototype, {
   getUserinfo: function() {
     return _userinfo;
   },
@@ -91,7 +85,6 @@ var AuthStore = assign({}, EventEmitter.prototype, {
  
 AppDispatcher.register(function(action) {
   
-  console.log(action);
   switch(action.actionType) {
     case AuthConstants.SIGN_IN:
       signin();
