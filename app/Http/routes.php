@@ -21,5 +21,5 @@ Route::get('/json/search','SnippetController@search');
 Route::controller('/account','AccountController');
 
 Route::get('/', function(){
-	return View::make('index');
+	return redirect('/_p');
 });
