@@ -17,15 +17,20 @@ class AccountController extends BaseController {
 	{	
 		// user already login
 		if(\Session::has("user")){
-			return \Response::json([]);
+			return redirect("/account/success");
 		}
 
 		// retrieve authorization uri for login
 		$googleService = \OAuth::consumer(self::_SERVICE,'http://'.$_SERVER['HTTP_HOST'].'/account/oauth2callback');
-		$url = (String)$googleService->getAuthorizationUri();
+		$url = (String)$googleService->getAuthorizationUri(["response_type"=>"token"]);
 	
-		return \Response::json(["auth_url" => $url]);
+		return \View::make("login_wrapper",["auth_url" => $url]);
 	}
+
+	public function getSuccess() {
+		return "success to login";
+	}
+
 	// public function postLogin()
 	// {
 		// $accounts = Account::all();
@@ -37,7 +42,7 @@ class AccountController extends BaseController {
 	{
 		$result = Account::find(1);
 		\Session::put('user', $result);	
-		return redirect('/#/snippets');
+		return redirect('/#/');
 	}
 
 
@@ -61,7 +66,7 @@ class AccountController extends BaseController {
 	{
 		$googleService = \OAuth::consumer(self::_SERVICE);
 
-        if(\Request::has("code")){
+        if(\Request::has("code")) {
             $code = \Request::get("code");
             $googleService->requestAccessToken($code);
             return redirect("/account/oauth2callback");
@@ -95,8 +100,11 @@ class AccountController extends BaseController {
         $result["id"] = $account->id;
         
         \Session::put('user', $result);
-        return redirect('/#/snippets');
+        return redirect('/account/success');
 	}
+
+
+
 
 	// 権限がないページへ
 	private function getAccountByGoogleId($googleAccountId)
