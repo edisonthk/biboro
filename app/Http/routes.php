@@ -24,25 +24,23 @@ Route::post('/json/feedback','FeedbackController@send');
 // All kinds of user auth is using in this method
 Route::controller('/account','AccountController');
 
-Route::get('/', function(){
-	if(Config::get('app.debug')){
-		return redirect('http://localhost:8000/_p/index.html');	
-	}else{
-		return redirect('/_p/index.html');
-	}
-});
-Route::get('/_p', function() {
-	include public_path().'/_p/index.html';
-});
 // AngularJS 
 Route::get('/_p/{a?}/{b?}/{c?}', function($a = null, $b = null, $c = null) 
 {
 	include public_path().'/_p/index.html';
 });
 
+Route::get('/', function(){
+	if(Config::get('app.debug')){
+		return redirect('http://localhost:8000/_p/');	
+	}else{
+		return redirect('/_p/');
+	}
+});
+
 // old version redirect
 Route::get('/snippets', function() {
-	return redirect('/_p/index.html');
+	return redirect('/_p/');
 });
 Route::get('/snippets/{id?}', function($id = '') {
 	return redirect('/_p/snippet/'.$id);
