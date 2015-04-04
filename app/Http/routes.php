@@ -32,7 +32,7 @@ Route::get('/', function(){
 	}
 });
 Route::get('/_p', function() {
-	return redirect('/_p/index.html');
+	include public_path().'/_p/index.html';
 });
 // AngularJS 
 Route::get('/_p/{a?}/{b?}/{c?}', function($a = null, $b = null, $c = null) 
@@ -42,7 +42,7 @@ Route::get('/_p/{a?}/{b?}/{c?}', function($a = null, $b = null, $c = null)
 
 // old version redirect
 Route::get('/snippets', function() {
-	return redirect('/_p/#/');
+	return redirect('/_p/index.html');
 });
 Route::get('/snippets/{id?}', function($id = '') {
 	return redirect('/_p/snippet/'.$id);
