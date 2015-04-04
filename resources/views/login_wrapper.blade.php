@@ -57,17 +57,12 @@
 			num_dots ++;
 		}, 400);
 
-		var hostname = window.location.hostname;
-		if(hostname == 'localhost') {
-			hostname += ':8000';
-		}
-
 		setTimeout(function(){
 			window.location = 'https://accounts.google.com/o/oauth2/auth?scope=' +
 	      'https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&' +
-	      'redirect_uri=http://'+hostname+'/account/oauth2callback&'+
+	      'redirect_uri={{env('GOOGLE_REDIRECT')}}&'+
 	      'response_type=code&' +
-	      'client_id='+encodeURI('754486540313-kg9j4k03tnn0s9d9c29gfkt88qqki6tq.apps.googleusercontent.com')+'&' +
+	      'client_id='+encodeURI('{{env('GOOGLE_CLIENT_ID')}}')+'&' +
 	      'access_type=online';
 		},1000);
 		
