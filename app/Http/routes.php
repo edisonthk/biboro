@@ -28,7 +28,7 @@ Route::get('/', function(){
 	if(Config::get('app.debug')){
 		return redirect('http://localhost:8000/_p/');	
 	}else{
-		return redirect('/_p');
+		return redirect('/_p/');
 	}
 });
 
