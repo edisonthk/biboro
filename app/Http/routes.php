@@ -31,3 +31,11 @@ Route::get('/', function(){
 		return redirect('/_p/');
 	}
 });
+
+// old version redirect
+Route::get('/snippets', function() {
+	return redirect('/_p/#/');
+});
+Route::get('/snippets/{id?}', function($id = '') {
+	return redirect('/_p/#/snippet/'.$id);
+});
