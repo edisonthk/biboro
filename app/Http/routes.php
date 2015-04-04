@@ -26,12 +26,14 @@ Route::controller('/account','AccountController');
 
 Route::get('/', function(){
 	if(Config::get('app.debug')){
-		return redirect('http://localhost:8000/_p/');	
+		return redirect('http://localhost:8000/_p/index.html');	
 	}else{
-		return redirect('/_p/');
+		return redirect('/_p/index.html');
 	}
 });
-	
+Route::get('/_p', function() {
+	return redirect('/_p/index.html');
+});
 // AngularJS 
 Route::get('/_p/{a?}/{b?}/{c?}', function($a = null, $b = null, $c = null) 
 {
