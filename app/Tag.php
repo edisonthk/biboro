@@ -19,6 +19,18 @@ class Tag extends Model {
 		return $this->belongsToMany('Snippet','snippet_tag','tag_id','snippet_id');	//‘½‘Î‘½‚Ì‚Æ‚«‚ÉŽg‚¤
 	}
 
+	public static function createIfNotExists($name) {
+		$tag = Tag::where('name','=',$name)->first();
+		if(is_null($tag)){
+			// tag not exists, so create it
+			$tag = new Tag;
+			$tag->name = $name;
+			$tag->save();
+		}
+		
+		return $tag;
+	}
+
 	public static function onlyName($search = null){
 
 		$results = array();

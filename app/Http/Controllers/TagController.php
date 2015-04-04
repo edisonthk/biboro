@@ -13,7 +13,7 @@ class TagController extends BaseController {
 			// [{ "text": "my_tag1" },{ "text": "my_tag2" },{ "text": "my_tag3" }]
 
 			$result = array();
-			foreach (Tag::onlyName(Input::get("q")) as $tag) {
+			foreach (Tag::onlyName(\Request::input("q","")) as $tag) {
 				$temp = array("text" => $tag->name);
 				array_push($result, $temp);
 			}

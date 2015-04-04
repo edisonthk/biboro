@@ -13,9 +13,11 @@
 
 // Snippet and Tags routing
 Route::controller('/json/tag','TagController');
+Route::put('/json/snippet/draft/{id?}', ['middleware'=>'auth.login','uses'=>'SnippetController@saveDraft']);
 Route::resource('/json/snippet','SnippetController');
 Route::get('/json/search','SnippetController@search');
 Route::post('/json/images/upload', 'ImageController@upload');
+Route::post('/json/feedback','FeedbackController@send');
 
 
 // Account routing

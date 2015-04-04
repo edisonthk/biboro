@@ -26,7 +26,7 @@ return [
 	|
 	*/
 
-	'url' => 'http://localhost',
+	'url' => 'http://localhost:8000/',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -52,7 +52,7 @@ return [
 	|
 	*/
 
-	'locale' => 'en',
+	'locale' => 'jp',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -146,7 +146,11 @@ return [
 		'App\Providers\RouteServiceProvider',
 
 
-		'Artdarek\OAuth\OAuthServiceProvider'
+		/* 
+		 * Open source providers
+		 */ 
+		'Artdarek\OAuth\OAuthServiceProvider',
+		'Jenssegers\Agent\AgentServiceProvider',
 
 	],
 
@@ -164,6 +168,7 @@ return [
 	'aliases' => [
 
 		'OAuth' => 'Artdarek\OAuth\Facade\OAuth',
+		'UserAgent' => 'Jenssegers\Agent\Facades\Agent',
 
 		'App'       => 'Illuminate\Support\Facades\App',
 		'Artisan'   => 'Illuminate\Support\Facades\Artisan',

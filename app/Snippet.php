@@ -13,9 +13,9 @@ class Snippet extends \Eloquent {
 	
 	public $timestamps = true;
 
-	 public function tags(){
+	public function tags(){
 		return $this->belongsToMany('App\Tag','snippet_tag','snippet_id','tag_id');
-	} 
+	}
 
 	public function getCreatorName(){
 		$acc = Account::find($this->account_id);

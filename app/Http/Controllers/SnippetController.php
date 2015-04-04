@@ -4,10 +4,12 @@ use App\Tag;
 use App\Snippet;
 use Illuminate\Routing\Controller as BaseController;
 
+use App\Http\Controllers\DraftController;
+
 class SnippetController extends BaseController {
 
 	public function __construct() {
-		 $this->beforeFilter('auth.login', array('except' => array('index','create','show','search')));
+        $this->middleware('auth.login', ['except' => ['index', 'show', 'search']]);
 	}
 
 	/**
@@ -34,8 +36,14 @@ class SnippetController extends BaseController {
 	 */
 	public function create()
 	{
-		//
-		return \Response::json("snippets.create");
+		$snippet = DraftController::read();
+
+		if(!is_null($snippet)) {
+			$snippet = $this->beautifySnippetObject($snippet);	
+		}
+		
+
+		return \Response::json(["snippet" => $snippet]);
 	}
 
 
@@ -60,10 +68,12 @@ class SnippetController extends BaseController {
 			$snippet->timestamps 	= true;
 			$snippet->lang 			= "jp";
 			$snippet->account_id 	= \Session::get("user")["id"];
-
 			$snippet->save();
 
 			$snippet->tagsave($inputs["tags"]);
+
+			// destroy draft as real data is stored to database
+			DraftController::destroy($id);
 
 		
 			$result = $this->beautifySnippetObject($snippet);
@@ -82,12 +92,13 @@ class SnippetController extends BaseController {
 	{
 		//
 		$snippet= Snippet::find($id);
+		if(is_null($snippet)) {
+			return \Response::json("", 404);
+		}
 
 		$result = $this->beautifySnippetObject($snippet);
 		
-		
 		return \Response::json($result);
-
 	}
 
 
@@ -101,11 +112,31 @@ class SnippetController extends BaseController {
 	{
 		//
 		// get the shop
-		$snippet = Snippet::find($id);
+		$snippet = DraftController::read($id);
+		if(is_null($snippet)) {
+			$snippet = Snippet::find($id);
+		}
+
+		if(!is_null($snippet)) {
+			$snippet = $this->beautifySnippetObject($snippet);	
+		}
 
 		// show the edit form and pass the shop
-		return \Response::json('snippets.edit')
-			->with('snippet', $snippet);
+		return \Response::json(["snippet" => $snippet]);
+	}
+
+	public function saveDraft($id = null)
+	{
+
+		$data = [
+			"title" => \Request::input('title', ''),
+			"content" => \Request::input('content', ''),
+			"tags" => \Request::input('tags', []),
+		];
+
+		DraftController::save($data, $id);
+
+		return \Response::json("");
 	}
 
 
@@ -143,11 +174,14 @@ class SnippetController extends BaseController {
 			$snippet = Snippet::find($id);
 			$snippet->title       	= \Request::get('title');
 			$snippet->content    	= \Request::get('content');
-			$snippet->timestamps 	=true;
+			$snippet->timestamps 	= true;
 			$snippet->lang 			= "jp";
 			$snippet->save();
 
 			$snippet->tagsave(\Request::get('tags'));
+
+			// destroy draft as real data is stored to database
+			DraftController::destroy($id);
 
 			// redirect
 			\Session::flash('message', 'Successfully created snippet!');
@@ -170,30 +204,27 @@ class SnippetController extends BaseController {
 		$snippet = Snippet::find($id);
 		$snippet->delete();
 
+		DraftController::destroy($id);
+
 		\Session::flash('message', 'Successfully deleted the nerd!');
 		return \Response::json('snippet');
 	}
 
 	public function search()
 	{
-		if(Input::has("kw")){
+		if(\Request::has("kw")){
+			$kw = \Request::get("kw");
 			$snippets = array();
 			$tags = array();
 			$temptags = array();
+
+			$this->recordKeywords($kw);
 			
 			//キーワードの整形
-			$kw=mb_convert_kana( Input::get("kw"),"s");
+			$kw=mb_convert_kana( $kw,"s");
 			preg_match_all("|\[(.*?)\]|",$kw,$tagresult);
 			$snippetresult=array_values(array_filter(preg_split("/,|\s/",implode(",",preg_split("/\[(.*)\]/",$kw)))));
-			
-/* 		//ファイル出力(キーワード)
-			$fileName = "/home/vagrant/Code/codegarage/app/storage/history/searchedkw.txt";
-			$ip = $_SERVER["REMOTE_ADDR"];
-			$date=date('Y/n/j/G:i:s');
-			$outputkw =  $date."  ".$ip." : ".$kw.PHP_EOL;
-			file_put_contents($fileName,$outputkw,FILE_APPEND | LOCK_EX); */
-
-			$this->recordKeywords(Input::get("kw"));
+	
 			
 			//タグ検索
 			foreach($tagresult[1] as $t){
@@ -252,19 +283,19 @@ class SnippetController extends BaseController {
 				array_push($new_snippet_result, $value);
 			}
 			// array_multisort($updated_at,SORT_ASC,SORT_NATURAL,$snippets_result);
-			return Response::json($new_snippet_result);
+			return \Response::json($new_snippet_result);
 		}
 
-		App::abort(404);
+		\App::abort(404);
 	}
 
 	private function recordKeywords($kw) {
 		// ファイルの出力
 
 		//ファイル出力
-		$fileName = storage_path("history") . "/" .date('Y-m-d').".csv";
+		$fileName = storage_path("kw") . "/" .date('Y-m-d').".csv";
 		$date=date('Y-m-d H:i:s');
-		$outputkw =  $date.','.UserAgent::device().','.UserAgent::platform().','.UserAgent::browser().','.$kw.','.PHP_EOL;
+		$outputkw =  $date.','.\UserAgent::device().','.\UserAgent::platform().','.\UserAgent::browser().','.$kw.','.PHP_EOL;
 		file_put_contents($fileName,$outputkw,FILE_APPEND | LOCK_EX);
 	}
 
