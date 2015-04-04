@@ -29,11 +29,14 @@ class Draft extends Model {
 	public function tagsave($tags) {
 
 		\DB::delete('delete from draft_tag where draft_id = ?',array($this->id));
-
+		
+		$new_tags = [];
 		foreach ($tags as $tag_name) {
 			$tag = Tag::createIfNotExists($tag_name);
-			$this->tags()->save($tag);
+			array_push($new_tags, $tag->id);
 		}
+
+		$this->tags()->sync($new_tags);
 	}
 
 }

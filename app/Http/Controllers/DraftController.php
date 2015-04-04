@@ -14,20 +14,12 @@ class DraftController extends Controller {
 			$draft = Draft::where("account_id","=",\Session::get("user")["id"])
 				->whereNull("snippet_id")
 				->first();
-
-			if(!is_null($draft)){
-				$draft->id = $draft->snippet_id;
-			}
 			return $draft;
 		}else{
 
 			$draft = Draft::where("account_id","=",\Session::get("user")["id"])
 				->where("snippet_id","=",$snippet_id)
 				->first();
-
-			if(!is_null($draft)){
-				$draft->id = $draft->snippet_id;
-			}
 
 			return $draft;
 		}

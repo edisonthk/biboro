@@ -42,6 +42,9 @@ class SnippetController extends BaseController {
 			$snippet = $this->beautifySnippetObject($snippet);	
 		}
 		
+		if(property_exists($snippet, 'snippet_id')){
+			$snippet->id = $snippet->snippet_id;
+		}
 
 		return \Response::json(["snippet" => $snippet]);
 	}
@@ -119,6 +122,10 @@ class SnippetController extends BaseController {
 
 		if(!is_null($snippet)) {
 			$snippet = $this->beautifySnippetObject($snippet);	
+
+			if(array_key_exists('snippet_id', $snippet)){
+				$snippet["id"] = $snippet["snippet_id"];
+			}
 		}
 
 		// show the edit form and pass the shop
@@ -136,7 +143,7 @@ class SnippetController extends BaseController {
 
 		DraftController::save($data, $id);
 
-		return \Response::json("");
+		return \Response::json(["test"=>\Request::input('tags', [])]);
 	}
 
 
