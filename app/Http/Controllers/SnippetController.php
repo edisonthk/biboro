@@ -76,7 +76,7 @@ class SnippetController extends BaseController {
 			$snippet->tagsave($inputs["tags"]);
 
 			// destroy draft as real data is stored to database
-			DraftController::destroy($id);
+			DraftController::destroy();
 
 		
 			$result = $this->beautifySnippetObject($snippet);

@@ -43,10 +43,15 @@ class DraftController extends Controller {
 		$draft->tagsave($data["tags"]);
 	}
 
-	public static function destroy($snippet_id)
+	public static function destroy($snippet_id = null)
 	{
 		
-		$draft = Draft::where("snippet_id","=",$snippet_id)->first();
+		if(is_null($snippet_id)) {
+			$draft = Draft::whereNull("snippet_id")->first();
+		}else{
+			$draft = Draft::where("snippet_id","=",$snippet_id)->first();
+		}
+		
 
 		if(!self::isEditable($draft)){
 			return false;
