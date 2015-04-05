@@ -40,12 +40,12 @@ class SnippetController extends BaseController {
 
 		if(!is_null($snippet)) {
 			$snippet = $this->beautifySnippetObject($snippet);	
+
+			if(array_key_exists("snippet_id", $snippet)) {
+				$snippet["id"] = $snippet["snippet_id"];
+			}
 		}
 		
-		if(property_exists($snippet, 'snippet_id')){
-			$snippet->id = $snippet->snippet_id;
-		}
-
 		return \Response::json(["snippet" => $snippet]);
 	}
 
