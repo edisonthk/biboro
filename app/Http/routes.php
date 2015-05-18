@@ -25,10 +25,7 @@ Route::post('/json/feedback','FeedbackController@send');
 Route::controller('/account','AccountController');
 
 // AngularJS 
-Route::get('/_p/{a?}/{b?}/{c?}', function($a = null, $b = null, $c = null) 
-{
-	include public_path().'/_p/index.html';
-});
+Route::get('/_p/{a?}/{b?}/{c?}', 'HomeController@index');
 
 Route::get('/', function(){
 	if(Config::get('app.debug')){

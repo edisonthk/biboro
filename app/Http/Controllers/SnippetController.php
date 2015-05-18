@@ -3,13 +3,18 @@
 use App\Tag;
 use App\Snippet;
 use Illuminate\Routing\Controller as BaseController;
-
 use App\Http\Controllers\DraftController;
 
 class SnippetController extends BaseController {
 
-	public function __construct() {
+	private $snippet_services;
+
+	public function __construct(
+		\App\Edisonthk\SnippetService $snippet_services
+	) {
         $this->middleware('auth.login', ['except' => ['index', 'show', 'search']]);
+
+        $this->snippet_services = $snippet_services;
 	}
 
 	/**
@@ -22,7 +27,7 @@ class SnippetController extends BaseController {
 		$snippets = array();
 		foreach (Snippet::orderBy('updated_at','desc')->get(['id','title','updated_at']) as $snippet) {		//条件付けのときは->get()が必要
 
-			array_push($snippets, $this->beautifySnippetObject($snippet)); 
+			array_push($snippets, $this->snippet_services->beautifySnippetObject($snippet)); 
 
 		}
 		
@@ -39,7 +44,7 @@ class SnippetController extends BaseController {
 		$snippet = DraftController::read();
 
 		if(!is_null($snippet)) {
-			$snippet = $this->beautifySnippetObject($snippet);	
+			$snippet = $this->snippet_services->beautifySnippetObject($snippet);	
 
 			if(array_key_exists("snippet_id", $snippet)) {
 				$snippet["id"] = $snippet["snippet_id"];
@@ -59,7 +64,7 @@ class SnippetController extends BaseController {
 	{
 		// process the login
 		$inputs = \Request::all();
-		$validator = $this->validate($inputs);
+		$validator = $this->snippet_services->validate($inputs);
 
 		if ($validator->fails()) {
 			return \Response::json(["error"=>$validator->messages()],400);
@@ -79,7 +84,7 @@ class SnippetController extends BaseController {
 			DraftController::destroy();
 
 		
-			$result = $this->beautifySnippetObject($snippet);
+			$result = $this->snippet_services->beautifySnippetObject($snippet);
 			return \Response::json($result);
 		}
 	}
@@ -96,11 +101,10 @@ class SnippetController extends BaseController {
 		//
 		$snippet= Snippet::find($id);
 		if(is_null($snippet)) {
-			return \Response::json("", 404);
+			return Response::json("", 404);
 		}
 
-		$result = $this->beautifySnippetObject($snippet);
-		
+		$result = $this->snippet_services->beautifySnippetObject($snippet);
 		return \Response::json($result);
 	}
 
@@ -121,7 +125,7 @@ class SnippetController extends BaseController {
 		}
 
 		if(!is_null($snippet)) {
-			$snippet = $this->beautifySnippetObject($snippet);	
+			$snippet = $this->snippet_services->beautifySnippetObject($snippet);	
 
 			if(array_key_exists('snippet_id', $snippet)){
 				$snippet["id"] = $snippet["snippet_id"];
@@ -166,7 +170,7 @@ class SnippetController extends BaseController {
 		);
 		$validator = Validator::make(Input::all(), $rules);
 */
-		$validator = $this->validate(\Request::all());
+		$validator = $this->snippet_services->validate(\Request::all());
 		// process the login
 		if ($validator->fails()) {
 
@@ -193,7 +197,7 @@ class SnippetController extends BaseController {
 			// redirect
 			\Session::flash('message', 'Successfully created snippet!');
 
-			$result = $this->beautifySnippetObject($snippet);
+			$result = $this->snippet_services->beautifySnippetObject($snippet);
 			return \Response::json($result);
 		}
 	}
@@ -221,6 +225,13 @@ class SnippetController extends BaseController {
 	{
 		if(\Request::has("kw")){
 			$kw = \Request::get("kw");
+
+			$kw = str_replace("　", " ", $kw);
+			$kws = explode(" ", $kw);
+
+			foreach ($kws as $key => $value) {
+				
+			}
 			$snippets = array();
 			$tags = array();
 			$temptags = array();
@@ -286,7 +297,7 @@ class SnippetController extends BaseController {
 
 			$new_snippet_result = [];
 			foreach ($snippets_result as $value) {
-				$value["updated_at"] = $this->convertToUserViewTimestamp($value["updated_at"]);
+				$value["updated_at"] = $this->snippet_services->convertToUserViewTimestamp($value["updated_at"]);
 				array_push($new_snippet_result, $value);
 			}
 			// array_multisort($updated_at,SORT_ASC,SORT_NATURAL,$snippets_result);
@@ -294,78 +305,6 @@ class SnippetController extends BaseController {
 		}
 
 		\App::abort(404);
-	}
-
-	private function recordKeywords($kw) {
-		// ファイルの出力
-
-		//ファイル出力
-		$fileName = storage_path("kw") . "/" .date('Y-m-d').".csv";
-		$date=date('Y-m-d H:i:s');
-		$outputkw =  $date.','.\UserAgent::device().','.\UserAgent::platform().','.\UserAgent::browser().','.$kw.','.PHP_EOL;
-		file_put_contents($fileName,$outputkw,FILE_APPEND | LOCK_EX);
-	}
-
-	private function beautifySnippetObject($snippet){
-		$temp = $snippet->toArray();
-		$temp["updated_at"] = $this->convertToUserViewTimestamp($temp["updated_at"]);
-		$temp["tags"] = $snippet->tags()->getResults()->toArray();
-		$temp["creator_name"] = $snippet->getCreatorName();
-		$temp["editable"] = (\Session::has("user") && \Session::get("user")["id"] == $snippet->account_id);
-		
-		return $temp;
-	}
-
-	private function convertToUserViewTimestamp($timestamp){
-	    $d1 = new \DateTime($timestamp);
-	    $n = new \DateTime("now");
-	    $diff = $d1->diff($n);
-
-	    if($diff->y > 0) { 
-	        return $diff->format("%y年前");
-	    } 
-	    if($diff->m > 0) { 
-	        return $diff->format("%m月前");
-	    } 
-	    if($diff->d > 0) { 
-	        return $diff->format("%d日前");
-	    } 
-	    if($diff->h > 0) { 
-	        return $diff->format("%h時間前");
-	    } 
-	    if($diff->i > 0) { 
-	        return $diff->format("%i分前");
-	    } 
-
-	    return "１分前";
-	}
-
-	private function validate($inputs)
-	{
-		\Validator::extend('tag_exists', function($attribute, $value, $parameters)
-		{
-			if(is_array($value)){
-				foreach ($value as $key => $single) {
-					$count = Tag::where("name","=",$single)->count();
-					if($count <= 0){
-						break;
-					}
-				}
-			}else{
-				$count = Tag::where("name","=",$value)->count();	
-			}
-			
-
-		    return $count > 0;
-		});
-
-		$rules = array(
-			'title'       => 'required',
-			'content'      => 'required',
-			'tags'      => 'required'
-		);
-
-		return \Validator::make($inputs, $rules);
 	}
 
 }
