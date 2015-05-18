@@ -236,7 +236,7 @@ class SnippetController extends BaseController {
 			$tags = array();
 			$temptags = array();
 
-			$this->recordKeywords($kw);
+			$this->snippet_services->recordKeywords($kw);
 			
 			//キーワードの整形
 			$kw=mb_convert_kana( $kw,"s");
