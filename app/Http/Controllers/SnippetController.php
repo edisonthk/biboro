@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers;
 
+use \Response;
 use App\Tag;
 use App\Snippet;
 use Illuminate\Routing\Controller as BaseController;

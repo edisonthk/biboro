@@ -46,6 +46,16 @@
 			<ng-include ng-controller="MyController" onload="onloadedEvent()" src="'components/app.html'"></ng-include>
 		</div>
 
+		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+		  ga('create', 'UA-44036434-6', 'auto');
+		  ga('send', 'pageview');
+
+		</script>
 		<script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
 		<script type="text/javascript" src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
 		<script type="text/javascript" src="bower_components/angular-google-analytics/dist/angular-google-analytics.min.js"></script>
@@ -60,6 +70,7 @@
 		<script type="text/javascript" src="bower_components/angular-animate/angular-animate.min.js"></script>
 		<script type="text/javascript" src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 		<script type="text/javascript" src="bower_components/angularjs-toaster/toaster.min.js"></script>
+		<script type="text/javascript" src="bower_components/angularytics/dist/angularytics.min.js"></script>
 		
 		<script type="text/javascript" src="js/app.js"></script>
 		<script type="text/javascript" src="js/controllers.js"></script>
