@@ -13,6 +13,7 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 
+    # rewrite exact match of "/_p/" rules to "/"
     RewriteCond %{REQUEST_URI} ^/_p/?$
     RewriteRule (.*) /
 
