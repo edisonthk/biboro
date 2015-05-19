@@ -25,7 +25,7 @@ Route::post('/json/feedback','FeedbackController@send');
 Route::controller('/account','AccountController');
 
 // AngularJS 
-Route::get('/_p/{a?}/{b?}/{c?}', 'HomeController@index');
+Route::get('/_p/{a?}/{b?}/{c?}',['as' => 'profile', 'uses' =>'HomeController@index']);
 
 Route::get('/', function(){
 	if(Config::get('app.debug')){

@@ -14,7 +14,7 @@ return [
 	*/
 
 	'paths' => [
-		realpath(public_path('_p'))
+		realpath(base_path('resources/views'))
 	],
 
 	/*
