@@ -25,7 +25,7 @@ class HomeController extends Controller {
 				$title = $snippet->title." | ".$title;
 				$short_description = preg_replace("/[\n\*\#]+/","", $snippet->content);
 				$short_description = preg_replace("/\s\s+/", " ", $short_description);
-				$short_description = substr($short_description, 0, 25);
+				$short_description = substr($short_description, 0, 100);
 				$description = "{$short_description} ...";
 			}
 		}
