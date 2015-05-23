@@ -21,7 +21,7 @@ class HomeController extends Controller {
 		if($a === 'snippet' && is_numeric($b)) {
 			$snippet = Snippet::find($b);
 			if(!is_null($snippet)) {
-				$url .= "snippet/{$b}";
+				$url .= "_p/snippet/{$b}";
 				$title = $snippet->title." | ".$title;
 				$short_description = preg_replace("/[\n\*\#]+/","", $snippet->content);
 				$short_description = preg_replace("/\s\s+/", " ", $short_description);
