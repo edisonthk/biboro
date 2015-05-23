@@ -1,30 +1,32 @@
 <?php namespace App\Http\Controllers;
 
-
+use Response;
 use App\Account;
 use Illuminate\Routing\Controller as BaseController;
 
 
 class AccountController extends BaseController {
 
-	const COOKIE_ALREADY_LOGIN_KEY = "already_login";
-	const COOKIE_ALREADY_LOGIN_VALUE = "1";
-	const COOKIE_ALREADY_LOGIN_TIME = 10080; // unit in minutes, 1440 * 7 = 10080 = one week
 
-	const _SERVICE = 'Google';
+	public $account_services;
+
+	public function __construct(
+		\App\Edisonthk\AccountService $account_services
+	) {
+		$this->account_services = $account_services;
+	}
 
 	public function getSignin()
 	{	
 		// user already login
-		if(\Session::has("user")){
+		if($this->account_services->hasLogined()){
 			return redirect("/account/success");
 		}
 
 		// retrieve authorization uri for login
-		$googleService = \OAuth::consumer(self::_SERVICE,'http://'.$_SERVER['HTTP_HOST'].'/account/oauth2callback');
-		$url = (String)$googleService->getAuthorizationUri(["response_type"=>"token"]);
+		$url = $this->account_services->getOAuthorizationUri();
 	
-		return \View::make("login_wrapper",["auth_url" => $url]);
+		return view("login_wrapper",["auth_url" => $url]);
 	}
 
 	public function getSuccess() {
@@ -48,75 +50,35 @@ class AccountController extends BaseController {
 
 	public function getUserinfo()
 	{
-		if(\Session::has("user")){
-			return \Response::json(\Session::get("user"), 200);
+		if($this->account_services->hasLogined()){
+			$user = $this->account_services->getLoginedUserInfo();
+			return Response::json($user, 200);
 		}else{
-			return \Response::json(null , 403);
+
+			$user = $this->account_services->getUserFromRememberToken();
+			if(!is_null($user)) {
+				return Response::json($user, 200);
+			}
+			
+			return Response::json(null , 403);
 		}
 	}
 
 	public function getSignout()
 	{
-		\Session::forget("user");
-		
+		$this->account_services->logout();
+
         return redirect("/#/snippets");
 	}
 
 	public function getOauth2callback()
 	{
-		$googleService = \OAuth::consumer(self::_SERVICE);
-
-        if(\Request::has("code")) {
-            $code = \Request::get("code");
-            $googleService->requestAccessToken($code);
-            return redirect("/account/oauth2callback");
-        }
-
-        // if(!\GoogleOAuth::hasAuthorized()){
-        // 	// fail to authorized
-        //     die("Not authorized yet");
-        // }
-
-
-        $result = json_decode( $googleService->request( 'https://www.googleapis.com/oauth2/v1/userinfo' ), true );
-		$account = $this->getAccountByGoogleId($result["id"]);
-
-        if(is_null($account)){
-        	// 初めてログインする人はデータベースに保存されます。
-        	$account = new Account;
-        	$account->name 		= $result["name"];
-        	$account->google_id = $result["id"];
-        	$account->email 	= $result["email"];
-        	$account->level	= false;
-        	$account->save();
-
-        }else{
-        	// 初めてのではない人はデータベースのデータを更新
-        	// Googleアカウントの名前がGoogleの設定で変更された可能性があるので、ログインする都度アカウント名を更新します。
-        	$account->name 		= $result["name"];
-        	$account->save();
-        }
-        
-        $result["id"] = $account->id;
-        
-        \Session::put('user', $result);
-        return redirect('/account/success');
-	}
-
-
-
-
-	// 権限がないページへ
-	private function getAccountByGoogleId($googleAccountId)
-	{
-		$accounts = Account::all();
-		foreach ($accounts as $acc) {
-			
-			if($acc->google_id == $googleAccountId){
-				return $acc;
-			}
+		$result = $this->account_services->login();
+		if($result["success"]) {
+			return redirect('/account/success');	
 		}
-		return null;
+        
+        return redirect('/account/success?error='.$result["message"]);
 	}
 
 }
