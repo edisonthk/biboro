@@ -15,6 +15,24 @@ class AccountService {
     const _REMEMBER_TOKEN_EMAIL = "__em1";
     const _REMEMBER_TOKEN_EXPIRED = 5760; // 60 minutes * 24hours * 4days = 5760 minutes
 
+    public function isAdmin() {
+
+        $admins = [
+            'edisonthk@gmail.com',
+            'likwee@iroya.jp',
+        ];
+
+        if($this->hasLogined()) {
+            $user = $this->getLoginedUserInfo();
+            foreach ($admins as $value) {
+                if($value == $user["email"]) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 	public function hasLogined() {
 		return Session::has(self::USER_SESSION);
 	}

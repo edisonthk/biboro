@@ -52,11 +52,13 @@ class AccountController extends BaseController {
 	{
 		if($this->account_services->hasLogined()){
 			$user = $this->account_services->getLoginedUserInfo();
+			$user["admin"] = $this->account_services->isAdmin();
 			return Response::json($user, 200);
 		}else{
 
 			$user = $this->account_services->getUserFromRememberToken();
 			if(!is_null($user)) {
+				$user["admin"] = $this->account_services->isAdmin();
 				return Response::json($user, 200);
 			}
 			

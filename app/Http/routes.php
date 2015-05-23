@@ -19,6 +19,8 @@ Route::get('/json/search','SnippetController@search');
 Route::post('/json/images/upload', 'ImageController@upload');
 Route::post('/json/feedback','FeedbackController@send');
 
+// view search logs
+Route::get('/log/kws', 'LogController@getKeywordLog');
 
 // Account routing
 // All kinds of user auth is using in this method
