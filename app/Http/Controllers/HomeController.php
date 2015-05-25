@@ -18,14 +18,15 @@ class HomeController extends Controller {
 		$title = "CodeGarage";
 		$description = "キーボードだけで検索、選択ができるスニペットの共有サイト";
 
-		if($a === 'snippet' && is_numeric($b)) {
-			$snippet = Snippet::find($b);
+		if(is_numeric($a) && is_null($b)) {
+			$snippet = Snippet::find($a);
 			if(!is_null($snippet)) {
-				$url .= "_p/snippet/{$b}";
+				$url .= "snippet/{$a}";
 				$title = $snippet->title." | ".$title;
 				$short_description = preg_replace("/[\n\*\#]+/","", $snippet->content);
 				$short_description = preg_replace("/\s\s+/", " ", $short_description);
-				$short_description = substr($short_description, 0, 100);
+				$short_description = substr($short_description, 0, 200);
+
 				$description = "{$short_description} ...";
 			}
 		}
@@ -33,7 +34,8 @@ class HomeController extends Controller {
 		$data = [
 			"url"          => $url,
 			"title"        => $title,
-			"description"  => $description
+			"description"  => $description,
+			"angular_path" => '/_p/',
 		];
 
 		return view("index",$data);

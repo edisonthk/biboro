@@ -26,21 +26,25 @@ Route::get('/log/kws', 'LogController@getKeywordLog');
 // All kinds of user auth is using in this method
 Route::controller('/account','AccountController');
 
-// AngularJS 
-Route::get('/_p/{a?}/{b?}/{c?}',['as' => 'profile', 'uses' =>'HomeController@index']);
-
-Route::get('/', function(){
-	if(Config::get('app.debug')){
-		return redirect('http://localhost:8000/_p/');	
-	}else{
-		return redirect('/_p/');
-	}
+Route::get('/_p/', function(){
+	return redirect('/');
 });
 
 // old version redirect
-Route::get('/snippets', function() {
-	return redirect('/_p/');
+Route::get('/_p/snippet', function() {
+	return redirect('/snippet');
+});
+Route::get('/_p/snippet/{id?}', function($id = '') {
+	return redirect('/snippet/'.$id);
+});
+// old version redirect
+Route::get('//snippets', function() {
+	return redirect('/snippet');
 });
 Route::get('/snippets/{id?}', function($id = '') {
-	return redirect('/_p/snippet/'.$id);
+	return redirect('/snippet/'.$id);
 });
+
+// AngularJS 
+Route::get('/snippet/{a?}/{b?}/{c?}', 'HomeController@index');
+Route::get('/', 'HomeController@index');

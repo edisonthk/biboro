@@ -7,7 +7,7 @@
 		<meta name="keywords" content="ソースコードの倉庫のことで、MBEDのC言語からAndroidのJava, ゲームのCPPなどソースコードであれば何でもありです。">
 
 		<link rel="icon" type="image/png" href="http://codegarage.edisonthk.com/img/icon@57x57.png" />
-		<base href="/_p/">
+		<base href="/">
 
 		<!-- Open Graph Protocol -->
 		<!-- Google Plus && Facebook -->
@@ -24,15 +24,18 @@
 		<meta name="twitter:url" content="{{$url}}" />
 
 
-		<link rel="stylesheet" type="text/css" href="css/normalize.min.css">
-		<link rel="stylesheet" type="text/css" href="css/global.css">
+		<link rel="stylesheet" type="text/css" href="{{$angular_path.'css/normalize.min.css'}}">
+		<link rel="stylesheet" type="text/css" href="{{$angular_path.'css/global.css'}}">
 
-		<link rel="stylesheet" type="text/css" href="bower_components/components-font-awesome/css/font-awesome.min.css">
-		<link rel="stylesheet" type="text/css" href="bower_components/ng-tags-input/ng-tags-input.css">
+		<link rel="stylesheet" type="text/css" href="{{$angular_path.'bower_components/components-font-awesome/css/font-awesome.min.css'}}">
+		<link rel="stylesheet" type="text/css" href="{{$angular_path.'bower_components/ng-tags-input/ng-tags-input.css'}}">
 		<!-- <link rel="stylesheet" type="text/css" href="bower_components/google-code-prettify/bin/prettify.min.css"> -->
-		<link rel="stylesheet" type="text/css" href="bower_components/google-code-prettify/styles/desert.css">
+		<link rel="stylesheet" type="text/css" href="{{$angular_path.'bower_components/google-code-prettify/styles/desert.css'}}">
 		<!-- <link rel="stylesheet" type="text/css" href="bower_components/angular-social/angular-social.css"> -->
-		<link rel="stylesheet" type="text/css" href="bower_components/angularjs-toaster/toaster.min.css">
+		<link rel="stylesheet" type="text/css" href="{{$angular_path.'bower_components/angularjs-toaster/toaster.min.css'}}">
+		<script type="text/javascript">
+		var prefix_path = '{{$angular_path}}';
+		</script>
 	</head>
 	<body>
 		
@@ -43,7 +46,7 @@
 					<h3>ローディング <span>...</span></h3>
 				</div>
 			</div>
-			<ng-include ng-controller="MyController" onload="onloadedEvent()" src="'components/app.html'"></ng-include>
+			<ng-include ng-controller="MyController" onload="onloadedEvent()" src="global.prefix_path+'components/app.html'"></ng-include>
 		</div>
 
 		<script>
@@ -54,28 +57,26 @@
 
 		  ga('create', 'UA-44036434-6', 'auto');
 		  ga('send', 'pageview');
-
 		</script>
-		<script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
-		<script type="text/javascript" src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
-		<script type="text/javascript" src="bower_components/angular-google-analytics/dist/angular-google-analytics.min.js"></script>
-		<script type="text/javascript" src="bower_components/angular-resource/angular-resource.min.js"></script>
-		<script type="text/javascript" src="bower_components/showdown/src/showdown.js"></script>
-		<script type="text/javascript" src="bower_components/ng-tags-input/ng-tags-input.js"></script>
-		<script type="text/javascript" src="bower_components/angular-social/src/scripts/00-directive.js"></script>
-		<script type="text/javascript" src="bower_components/angular-social/src/scripts/02-facebook.js"></script>
-		<script type="text/javascript" src="bower_components/angular-social/src/scripts/03-twitter.js"></script>
-		<script type="text/javascript" src="bower_components/angular-social/src/scripts/04-google-plus.js"></script>
-		<script type="text/javascript" src="bower_components/google-code-prettify/bin/prettify.min.js"></script>
-		<script type="text/javascript" src="bower_components/angular-animate/angular-animate.min.js"></script>
-		<script type="text/javascript" src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-		<script type="text/javascript" src="bower_components/angularjs-toaster/toaster.min.js"></script>
-		<script type="text/javascript" src="bower_components/angularytics/dist/angularytics.min.js"></script>
-		
-		<script type="text/javascript" src="js/app.js"></script>
-		<script type="text/javascript" src="js/controllers.js"></script>
-		<script type="text/javascript" src="js/directives.js"></script>
-		<script type="text/javascript" src="js/services.js"></script>
+		<script src="{{$angular_path.'bower_components/angular/angular.min.js'}}"></script>
+		<script src="{{$angular_path.'bower_components/angular-ui-router/release/angular-ui-router.min.js'}}"></script>
+		<script src="{{$angular_path.'bower_components/angular-google-analytics/dist/angular-google-analytics.min.js'}}"></script>
+		<script src="{{$angular_path.'bower_components/angular-resource/angular-resource.min.js'}}"></script>
+		<script src="{{$angular_path.'bower_components/showdown/src/showdown.js'}}"></script>
+		<script src="{{$angular_path.'bower_components/ng-tags-input/ng-tags-input.js'}}"></script>
+		<script src="{{$angular_path.'bower_components/angular-social/src/scripts/00-directive.js'}}"></script>
+		<script src="{{$angular_path.'bower_components/angular-social/src/scripts/02-facebook.js'}}"></script>
+		<script src="{{$angular_path.'bower_components/angular-social/src/scripts/03-twitter.js'}}"></script>
+		<script src="{{$angular_path.'bower_components/angular-social/src/scripts/04-google-plus.js'}}"></script>
+		<script src="{{$angular_path.'bower_components/google-code-prettify/bin/prettify.min.js'}}"></script>
+		<script src="{{$angular_path.'bower_components/angular-animate/angular-animate.min.js'}}"></script>
+		<script src="{{$angular_path.'bower_components/angular-sanitize/angular-sanitize.js'}}"></script>
+		<script src="{{$angular_path.'bower_components/angularjs-toaster/toaster.min.js'}}"></script>
+		<script src="{{$angular_path.'bower_components/angularytics/dist/angularytics.min.js'}}"></script>
+		<script src="{{$angular_path.'js/app.js'}}"></script>
+		<script src="{{$angular_path.'js/controllers.js'}}"></script>
+		<script src="{{$angular_path.'js/directives.js'}}"></script>
+		<script src="{{$angular_path.'js/services.js'}}"></script>
 		
 	</body>
 </html>
