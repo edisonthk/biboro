@@ -42,9 +42,12 @@ class AccountController extends BaseController {
 
 	public function getDevSignin()
 	{
-		$result = Account::find(1);
-		\Session::put('user', $result);	
-		return redirect('/#/');
+		$result = $this->account_services->login(1);
+		if($result["success"]) {
+			return redirect('/account/success');	
+		}
+        
+        return redirect('/account/success?error='.$result["message"]);
 	}
 
 

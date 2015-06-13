@@ -19,6 +19,9 @@ Route::get('/json/search','SnippetController@search');
 Route::post('/json/images/upload', 'ImageController@upload');
 Route::post('/json/feedback','FeedbackController@send');
 
+Route::get('/thisistest/json/get', 'HomeController@playground');
+Route::post('/thisistest/json/post', 'HomeController@playground');
+
 // view search logs
 Route::get('/log/kws', 'LogController@getKeywordLog');
 

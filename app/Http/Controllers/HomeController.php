@@ -1,9 +1,10 @@
 <?php namespace App\Http\Controllers;
 
-use App\Http\Requests;
+use \Request;
+use \Response;
 use App\Http\Controllers\Controller;
-
 use App\Snippet;
+use Mobile_Detect;
 
 class HomeController extends Controller {
 
@@ -38,6 +39,16 @@ class HomeController extends Controller {
 			"angular_path" => '/_p/',
 		];
 
+		$detectEngine = new Mobile_Detect;
+        if($detectEngine->isMobile()) {
+        	return view("mobile.index",$data);
+        }
 		return view("index",$data);
 	}
+
+    // This method prepared just for debug & fun
+    public function playground()
+    {
+        return Response::json(Request::all());
+    }
 }

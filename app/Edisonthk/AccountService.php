@@ -87,7 +87,12 @@ class AccountService {
 		return $url;
 	}
 
-	public function login() {
+	public function login($account_id = null) {
+
+        if(!is_null($account_id)) {
+
+        }
+
 		$googleService = \OAuth::consumer(self::_SERVICE);
 
         if(\Request::has("code")) {
@@ -103,8 +108,20 @@ class AccountService {
         	];
         }
 
-        $result = json_decode( $googleService->request( 'https://www.googleapis.com/oauth2/v1/userinfo' ), true );
-		$account = $this->getAccountByGoogleId($result["id"]);
+        $result = [];
+        $account = null;
+
+        if(is_null($account_id)) {
+            $result = json_decode( $googleService->request( 'https://www.googleapis.com/oauth2/v1/userinfo' ), true );
+            $account = $this->getAccountByGoogleId($result["id"]);
+        }else{
+            $account = Account::find($account_id);
+            $result = [
+                "name" => $account->name,
+                "email" => $account->email,
+            ];
+        }
+        
 
         if(is_null($account)){
         	// 初めてログインする人はデータベースに保存されます。
