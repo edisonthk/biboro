@@ -47,8 +47,13 @@ class HomeController extends Controller {
 	}
 
     // This method prepared just for debug & fun
-    public function playground()
+    public function getPlayground()
     {
-        return Response::json(Request::all());
+        return Response::json(['method'=>'get','data'=>Request::all()]);
+    }
+
+    public function postPlayground()
+    {
+        return Response::json(['method' => 'post', 'data'=>Request::all()]);
     }
 }
