@@ -32,7 +32,7 @@ class CreateUsersTable extends Migration {
 			$table->dropColumn('email');
 			$table->dropColumn('password');
 			$table->dropColumn('remember_token');
-		}
+		});
 	}
 
 }

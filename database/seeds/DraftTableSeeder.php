@@ -2,7 +2,7 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 
-class TagTableSeeder extends CSVSeeder {
+class DraftTableSeeder extends CSVSeeder {
 
-	protected $table = 'tags';
+	protected $table = 'drafts';
 }

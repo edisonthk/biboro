@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+
 class DatabaseSeeder extends Seeder {
 
 	/**
@@ -13,10 +14,12 @@ class DatabaseSeeder extends Seeder {
 	{
 		Eloquent::unguard();
 	
+		$this->call('AccountTableSeeder');
+		$this->call('DraftTableSeeder');
+        $this->call('DraftTagTableSeeder');
+		$this->call('SnippetTagTableSeeder');
+        $this->call('SnippetTableSeeder');
 		$this->call('TagTableSeeder');
-		$this->call('SnippetTableSeeder');
-		
-		
 	}
 
 }
