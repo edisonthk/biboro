@@ -31,7 +31,7 @@ class CSVSeeder extends Seeder
         $data = [];
 
         if (($handle = fopen($filename, 'r')) !== false) {
-            while (($row = fgetcsv($handle, 1500, $delimiter)) !== false) {
+            while (($row = fgetcsv($handle, 50000, $delimiter)) !== false) {
                 if (!$header) {
                     $header = $row;
 
@@ -41,14 +41,20 @@ class CSVSeeder extends Seeder
                         }
                     }
                 } else {
-                    $row = [];
-                    foreach ($row as $index => $value) {
-                        $row[$header[$index]] = $row[$index];
-                    }
-                    $data[] = $row;
+                    $newRow = [];
+                    
+                        foreach ($row as $index => $value) {
+                            if(array_key_exists($index, $header)) {
+                                $value = str_replace("__((COMMA))__", ",", $value);
+                                $value = str_replace("___NEXT_LINE____", "\n", $value);
+                                $newRow[$header[$index]] = $value;    
+                            }
+                        }    
+                    
+                    
+                    $data[] = $newRow;
                 }
             }
-            fclose($handle);
         }
         return $data;
     }

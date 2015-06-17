@@ -11,7 +11,7 @@ class Tag extends Model {
 	 *
 	 * @var string
 	 */
-	protected $table = 'tag_table';
+	protected $table = 'tags';
 	
 	public $timestamps = true;
 	

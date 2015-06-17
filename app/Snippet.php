@@ -9,7 +9,7 @@ class Snippet extends \Eloquent {
 	 *
 	 * @var string
 	 */
-	protected $table = 'snippet_table';
+	protected $table = 'snippets';
 	
 	public $timestamps = true;
 

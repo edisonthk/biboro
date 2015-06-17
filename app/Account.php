@@ -4,7 +4,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Account extends Model {
 
-	protected $table = 'account_table';
+	protected $table = 'accounts';
 	
 	public $timestamps = true;
 }
