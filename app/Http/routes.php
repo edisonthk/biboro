@@ -15,7 +15,7 @@
 Route::controller('/json/tag','TagController');
 Route::put('/json/snippet/draft/{id?}', ['middleware'=>'auth.login','uses'=>'SnippetController@saveDraft']);
 Route::resource('/json/snippet','SnippetController');
-Route::get('/json/search','SnippetController@search');
+Route::get('/json/search','KeywordsController@index');
 Route::post('/json/images/upload', 'ImageController@upload');
 Route::post('/json/feedback','FeedbackController@send');
 
@@ -41,7 +41,7 @@ Route::get('/_p/snippet/{id?}', function($id = '') {
 	return redirect('/snippet/'.$id);
 });
 // old version redirect
-Route::get('//snippets', function() {
+Route::get('/snippets', function() {
 	return redirect('/snippet');
 });
 Route::get('/snippets/{id?}', function($id = '') {
