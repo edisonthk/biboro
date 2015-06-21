@@ -49,11 +49,18 @@ class HomeController extends Controller {
     // This method prepared just for debug & fun
     public function getPlayground()
     {
-        return Response::json(['method'=>'get','data'=>Request::all()]);
+        $data = ['method'=>'get','data'=>Request::all()];
+
+        return response()->json($data)
+            ->header('Access-Control-Allow-Origin', '*');
     }
 
     public function postPlayground()
     {
-        return Response::json(['method' => 'post', 'data'=>Request::all()]);
+        
+        $data = ['method' => 'post', 'data'=>Request::all()];
+
+        return response()->json($data)
+            ->header('Access-Control-Allow-Origin', '*');
     }
 }
