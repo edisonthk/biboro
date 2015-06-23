@@ -8,29 +8,37 @@ use Illuminate\Routing\Controller as BaseController;
 class AccountController extends BaseController {
 
 
-	public $account_services;
+	public $accountServices;
 
 	public function __construct(
-		\App\Edisonthk\AccountService $account_services
+		\App\Edisonthk\AccountService $accountServices
 	) {
-		$this->account_services = $account_services;
+		$this->accountServices = $accountServices;
 	}
 
 	public function getSignin()
 	{	
 		// user already login
-		if($this->account_services->hasLogined()){
+		if($this->accountServices->hasLogined()){
 			return redirect("/account/success");
 		}
 
 		// retrieve authorization uri for login
-		$url = $this->account_services->getOAuthorizationUri();
+		$url = $this->accountServices->getOAuthorizationUri();
+        $code = $this->accountServices->getAuthorizationCode();
 	
-		return view("login_wrapper",["auth_url" => $url]);
+		return view("login_wrapper",[
+            "action" => "login",
+            "auth_url" => $url, 
+            "code" => $code,
+        ]);
 	}
 
 	public function getSuccess() {
-		return "success to login";
+		return view("login_wrapper",[
+            "action" => "success",
+            "requested_uri" => $this->accountServices->getRequestedUri(),
+        ]);
 	}
 
 	// public function postLogin()
@@ -42,7 +50,7 @@ class AccountController extends BaseController {
 
 	public function getDevSignin()
 	{
-		$result = $this->account_services->login(1);
+		$result = $this->accountServices->login(1);
 		if($result["success"]) {
 			return redirect('/account/success');	
 		}
@@ -53,15 +61,15 @@ class AccountController extends BaseController {
 
 	public function getUserinfo()
 	{
-		if($this->account_services->hasLogined()){
-			$user = $this->account_services->getLoginedUserInfo();
-			$user["admin"] = $this->account_services->isAdmin();
+		if($this->accountServices->hasLogined()){
+			$user = $this->accountServices->getLoginedUserInfo();
+			$user["admin"] = $this->accountServices->isAdmin();
 			return Response::json($user, 200);
 		}else{
 
-			$user = $this->account_services->getUserFromRememberToken();
+			$user = $this->accountServices->getUserByRememberToken();
 			if(!is_null($user)) {
-				$user["admin"] = $this->account_services->isAdmin();
+				$user["admin"] = $this->accountServices->isAdmin();
 				return Response::json($user, 200);
 			}
 			
@@ -71,14 +79,14 @@ class AccountController extends BaseController {
 
 	public function getSignout()
 	{
-		$this->account_services->logout();
+		$this->accountServices->logout();
 
         return redirect("/#/snippets");
 	}
 
 	public function getOauth2callback()
 	{
-		$result = $this->account_services->login();
+		$result = $this->accountServices->login();
 		if($result["success"]) {
 			return redirect('/account/success');	
 		}

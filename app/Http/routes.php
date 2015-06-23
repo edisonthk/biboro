@@ -49,5 +49,9 @@ Route::get('/snippets/{id?}', function($id = '') {
 });
 
 // AngularJS 
-Route::get('/snippet/{a?}/{b?}/{c?}', 'HomeController@index');
-Route::get('/', 'HomeController@index');
+Route::group(['middleware' => ['auth.autologin']], function() {
+
+    Route::get('/snippet/{a?}/{b?}/{c?}', 'HomeController@index');
+    Route::get('/', 'HomeController@index');
+
+});

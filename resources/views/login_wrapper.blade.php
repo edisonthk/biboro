@@ -38,7 +38,11 @@
 <body>
 	<div class="center">
 		<h1>CodeGarage</h1>
+        @if($action == "login")
 		<h3>ログイン中 <span id="dots"></span></h3>
+        @elseif($action == "success")
+        <h3>ログイン成功！リダイレクト中 <span id="dots"></span></h3>
+        @endif
 	</div>
 	<script>
 		var num_dots = 0;
@@ -57,15 +61,27 @@
 			num_dots ++;
 		}, 400);
 
-		setTimeout(function(){
-			window.location = 'https://accounts.google.com/o/oauth2/auth?scope=' +
-	      'https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&' +
-	      'redirect_uri={{env('GOOGLE_REDIRECT')}}&'+
-	      'response_type=code&' +
-	      'client_id='+encodeURI('{{env('GOOGLE_CLIENT_ID')}}')+'&' +
-	      'access_type=online';
-		},1000);
+		
 		
 	</script>
+    @if($action == "login")
+    <script>
+        setTimeout(function(){
+            window.location = 'https://accounts.google.com/o/oauth2/auth?scope=' +
+          'https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&' +
+          'redirect_uri={{env('GOOGLE_REDIRECT')}}&'+
+          'response_type=code&' +
+          @if(!is_null($code)) 'code={{$code}}&'+ @endif
+          'client_id='+encodeURI('{{env('GOOGLE_CLIENT_ID')}}')+'&' +
+          'access_type=online';
+        },1000);
+    </script>
+    @elseif($action == "success")
+    <script>
+        setTimeout(function() {
+            window.location = {{$requested_uri}};
+        }, 3000);
+    </script>
+    @endif
 </body>
 </html>

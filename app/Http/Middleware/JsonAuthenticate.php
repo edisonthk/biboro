@@ -1,6 +1,8 @@
 <?php namespace App\Http\Middleware;
 
 use Closure;
+use Cookie;
+use Session;
 use Illuminate\Contracts\Auth\Guard;
 
 class JsonAuthenticate {
@@ -32,7 +34,7 @@ class JsonAuthenticate {
 	 */
 	public function handle($request, Closure $next)
 	{
-		if(\Session::has("user") && array_key_exists("id", \Session::get("user"))) {
+		if(Session::has("user") && array_key_exists("id", Session::get("user"))) {
 			return $next($request);
 		}else{
 			return response('Unauthorized.', 401);
