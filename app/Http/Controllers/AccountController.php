@@ -25,12 +25,13 @@ class AccountController extends BaseController {
 
 		// retrieve authorization uri for login
 		$url = $this->accountServices->getOAuthorizationUri();
-        $code = $this->accountServices->getAuthorizationCode();
+
+        $user = $this->accountServices->getUserByRememberToken();
 	
 		return view("login_wrapper",[
             "action" => "login",
             "auth_url" => $url, 
-            "code" => $code,
+            "user" => $user,
         ]);
 	}
 
