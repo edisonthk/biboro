@@ -9,7 +9,7 @@ class ScoreService {
     const PENALTY_FOR_OLDEST = 0.01;
     const TAG_SCORE = 2;
 
-    public function calcScore($snippet, $kw) {
+    public function calcScore($snippet, $kws) {
         // search from keywords database
 
         // 
@@ -19,25 +19,35 @@ class ScoreService {
         $snippet->load('tags');
 
         $score = 0;
-        if(strlen($kw) > 1) {
-            $score += $this->getContentScore($body, $kw);
-        }
-
-        $score += $this->getTitleScore($title, $kw);
-
-        foreach ($snippet->tags as $tag) {
-            if(strtolower($tag->name) == strtolower($kw)) {
-                $score += self::TAG_SCORE;
+        $parsedKeywords = [];
+        $parsedKeywords = array_merge($parsedKeywords, $this->extractAlphabetWordsFromJapaneseContent($kws)["words"]);
+        
+        foreach ($parsedKeywords as $kw) {
+            
+            if(strlen($kw) > 1) {
+                $score += $this->getContentScore($body, $kw);
             }
+
+            $score += $this->getTitleScore($title, $kw);
+
+            foreach ($snippet->tags as $tag) {
+                if(strtolower($tag->name) == strtolower($kw)) {
+                    $score += self::TAG_SCORE;
+                }
+            }
+
+            if($score <= 0) {
+                break;
+            }
+
+            // if oldest, more penalty on score
+            $d1= new \DateTime("now");
+            $d2= new \DateTime($snippet->updated_at);
+            $diff=$d2->diff($d1);
+
+            $day = intval($diff->format('%d'));
+            $score -= $day * self::PENALTY_FOR_OLDEST;
         }
-
-        // if oldest, more penalty on score
-        $d1= new \DateTime("now");
-        $d2= new \DateTime($snippet->updated_at);
-        $diff=$d2->diff($d1);
-
-        $day = intval($diff->format('%d'));
-        $score -= $day * self::PENALTY_FOR_OLDEST;
         return $score;
     }
 
@@ -120,7 +130,13 @@ class ScoreService {
 
         $words = [];
         $extracted = preg_replace_callback("/[a-zA-Z]+/", function($matches) use (&$words) {
-            $words[] = $matches[0];
+            $wordsSplitBySpace = preg_split('/\s+/', $matches[0]);
+            foreach ($wordsSplitBySpace as $word) {
+                if(!empty($word)) {
+                    $words[] = $word;        
+                }
+            }
+            
             return "";
         },$content);
 
