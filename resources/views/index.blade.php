@@ -2,11 +2,11 @@
 <html lang="ja" ng-app="app">
 	<head>
 		<meta charset="utf-8">
-		<title>CodeGarage</title>
+		<title>{{Config::get("app.name")}}</title>
 		<meta name="description" content="{{$description}}">
 		<meta name="keywords" content="ソースコードの倉庫のことで、MBEDのC言語からAndroidのJava, ゲームのCPPなどソースコードであれば何でもありです。">
 
-		<link rel="icon" type="image/png" href="http://codegarage.edisonthk.com/img/icon@57x57.png" />
+		<link rel="icon" type="image/png" href="{{Config::get("app.url")}}/img/icon@57x57.png" />
 		<base href="/">
 
 		<!-- Open Graph Protocol -->
@@ -14,13 +14,13 @@
 		<meta property="og:type" content="website" />
 		<meta property="og:title" content="{{$title}}" />
 		<meta property="og:url" content="{{$url}}" />
-		<meta property="og:image" content="http://codegarage.edisonthk.com/img/icon@114x114.png" />
+		<meta property="og:image" content="{{Config::get("app.url")}}/img/icon@114x114.png" />
 		<meta property="og:description" content="{{$description}}" />
 
 		<meta name="twitter:card" content="summary" />
 		<meta name="twitter:title" content="{{$title}}" />
 		<meta name="twitter:description" content="{{$description}}" />
-		<meta name="twitter:image" content="http://codegarage.edisonthk.com/img/icon@114x114.png" />
+		<meta name="twitter:image" content="{{Config::get("app.url")}}/img/icon@114x114.png" />
 		<meta name="twitter:url" content="{{$url}}" />
 
 
@@ -42,7 +42,7 @@
 		<div ng-controller="LoaderController" ng-init="loaderInit()">
 			<div ng-if="!loaded" class="splash-screen">
 				<div class="center">
-					<h1>CodeGarage</h1>
+					<h1>{{Config::get("app.name")}}</h1>
 					<h3>ローディング <span>...</span></h3>
 				</div>
 			</div>

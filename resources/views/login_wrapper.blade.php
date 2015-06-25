@@ -2,7 +2,7 @@
 <html lang="jp">
 <head>
   	<meta charset="utf-8">
-	<title></title>
+	<title>{{Config::get("app.name")}} Login</title>
 	<meta name="description" content="">
 	<style type="text/css">
 	    html, body {
@@ -52,7 +52,7 @@
 </head>
 <body>
 	<div class="center">
-		<h1>CodeGarage</h1>
+		<h1>{{Config::get("app.name")}}</h1>
         @if($action == "login")
         <div class="msg">
             <h3 class="login">ログイン中 </h3><div id="dots"></div>
