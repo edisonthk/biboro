@@ -149,14 +149,14 @@ class AccountService {
         if(is_null($account)){
         	// 初めてログインする人はデータベースに保存されます。
         	$account = new Account;
-        	$account->name 		= $result["name"];
+        	$account->name 		= array_get($result, "name", $result["email"]);
         	$account->google_id = $result["id"];
         	$account->email 	= $result["email"];
         	$account->level	= false;
         }else{
         	// 初めてのではない人はデータベースのデータを更新
         	// Googleアカウントの名前がGoogleの設定で変更された可能性があるので、ログインする都度アカウント名を更新します。
-        	$account->name 		= $result["name"];
+        	$account->name 		= array_get($result, "name", $result["email"]);
         }
 
         if(!is_null($code)) {
