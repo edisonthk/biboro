@@ -1,7 +1,8 @@
 <?php namespace App\Http\Controllers;
 
-use \Request;
-use \Response;
+use Request;
+use Response;
+use Config;
 use App\Http\Controllers\Controller;
 use App\Snippet;
 use Mobile_Detect;
@@ -15,8 +16,8 @@ class HomeController extends Controller {
 	 */
 	public function index($a = null, $b = null, $c = null)
 	{	
-		$url = "http://codegarage.edisonthk.com/";
-		$title = "CodeGarage";
+		$url = Config::get("app.url")."/";
+		$title = Config::get("app.name");
 		$description = "キーボードだけで検索、選択ができるスニペットの共有サイト";
 
 		if(is_numeric($a) && is_null($b)) {
