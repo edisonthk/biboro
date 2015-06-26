@@ -73,6 +73,7 @@
 		<script src="{{$angular_path.'bower_components/angular-sanitize/angular-sanitize.js'}}"></script>
 		<script src="{{$angular_path.'bower_components/angularjs-toaster/toaster.min.js'}}"></script>
 		<script src="{{$angular_path.'bower_components/angularytics/dist/angularytics.min.js'}}"></script>
+        <script src="{{$angular_path.'bower_components/angular-cookies/angular-cookies.min.js'}}"></script>
 		<script src="{{$angular_path.'js/app.js'}}"></script>
 		<script src="{{$angular_path.'js/controllers.js'}}"></script>
 		<script src="{{$angular_path.'js/directives.js'}}"></script>

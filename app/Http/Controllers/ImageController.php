@@ -1,13 +1,15 @@
 <?php namespace App\Http\Controllers;
 
+use Request;
+use Response;
 use Illuminate\Routing\Controller as BaseController;
 
 class ImageController extends BaseController {
 				
 	public function upload(){
 
-		if(\Request::hasFile("files")){
-			$files = \Request::file("files");
+		if(Request::hasFile("files")){
+			$files = Request::file("files");
 
 			if(is_array($files)){
 				$result = [];
@@ -18,20 +20,20 @@ class ImageController extends BaseController {
 						array_push($result, ["success" => true, "message"=> $this->saveImage($file) ]);
 					}
 				}
-				return \Response::json($result);
+				return Response::json($result);
 
 			}else{
 				$file = $files;
 
 				if($file->getClientSize() > 1000000){
-					return \Response::json([ "success" => false, "errors" => "file too big" ] ,400);
+					return Response::json([ "success" => false, "errors" => "file too big" ] ,400);
 				}else{
-					return \Response::json([ "success" => true , "message" => $this->saveImage($file) ]);
+					return Response::json([ "success" => true , "message" => $this->saveImage($file) ]);
 				}
 			}
 		}
 
-		return \Response::json("Compulsory file request not found.",400);
+		return Response::json("Compulsory file request not found.",400);
 	}
 
 	private function saveImage($file) {
