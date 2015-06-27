@@ -54,19 +54,6 @@ class AccountService {
 		return Session::get(self::USER_SESSION);
 	}
 
-    public function getAuthorizationCode() {
-        if($this->hasLogined()) {
-            return $this->getLoginedUserInfo()->authorization_code;
-        }
-
-        $user = $this->getUserByRememberToken();
-        if(!is_null($user)) {
-            return $user->authorization_code;
-        }
-
-        return null;
-    }
-
     public function getUserByRememberToken() {
         if(Cookie::has(self::_REMEMBER_TOKEN_KEY)) {
             $token = Cookie::get(self::_REMEMBER_TOKEN_KEY);
@@ -166,6 +153,8 @@ class AccountService {
         $account->save();
         
         $result["id"] = $account->id;
+        $result["name"] = $account->name;
+        $result["email"] = $account->email;
         
         Session::put(self::USER_SESSION, $result);
 
