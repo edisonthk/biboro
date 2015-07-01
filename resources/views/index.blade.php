@@ -35,6 +35,7 @@
 		<link rel="stylesheet" type="text/css" href="{{$angular_path.'bower_components/angularjs-toaster/toaster.min.css'}}">
 		<script type="text/javascript">
 		var prefix_path = '{{$angular_path}}';
+        var debug = false;
 		</script>
 	</head>
 	<body>

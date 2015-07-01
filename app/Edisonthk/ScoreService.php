@@ -1,5 +1,7 @@
 <?php namespace App\Edisonthk;
 
+use DateTime;
+
 class ScoreService {
 
     const TITLE_FULL_MATCH_SCORE = 4;
@@ -19,9 +21,30 @@ class ScoreService {
         $snippet->load('tags');
 
         $score = 0;
+
         $parsedKeywords = [];
         $parsedKeywords = array_merge($parsedKeywords, $this->extractAlphabetWordsFromJapaneseContent($kws)["words"]);
+
+        // tokenize japanese words
+        if(count($parsedKeywords) == 0) {
+            $parsedKeywords[] = $kws;
+        }else{
+            $pattern = "/";
+            foreach ($parsedKeywords as $parsedKeyword) {
+                $pattern .= $this->escapeRegularExpression($parsedKeyword)."|";
+            }
+            $pattern = substr($pattern, 0 , -1);
+            $pattern .= "/u";
+            
+            foreach(preg_split($pattern, $kws) as $word) {
+                if(strlen($word) > 0) {
+                    $parsedKeywords[] = $word;    
+                }
+                
+            }    
+        }
         
+
         foreach ($parsedKeywords as $kw) {
             
             if(strlen($kw) > 1) {
@@ -41,14 +64,20 @@ class ScoreService {
             }
 
             // if oldest, more penalty on score
-            $d1= new \DateTime("now");
-            $d2= new \DateTime($snippet->updated_at);
+            $d1 = new DateTime("now");
+            $d2 = new DateTime($snippet->updated_at);
             $diff=$d2->diff($d1);
 
             $day = intval($diff->format('%d'));
             $score -= $day * self::PENALTY_FOR_OLDEST;
         }
         return $score;
+    }
+
+    public function escapeRegularExpression($words) {
+        return preg_replace_callback("/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/", function($matches) {
+            return "\\".$matches[0];
+        }, $words);
     }
 
     public function getTitleScore($title, $kw) {
