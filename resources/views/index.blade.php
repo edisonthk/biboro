@@ -77,6 +77,7 @@
         <script src="{{$angular_path.'bower_components/angular-cookies/angular-cookies.min.js'}}"></script>
 		<script src="{{$angular_path.'js/app.js'}}"></script>
 		<script src="{{$angular_path.'js/controllers.js'}}"></script>
+        <script src="{{$angular_path.'js/markdownSearch.js'}}"></script>
 		<script src="{{$angular_path.'js/directives.js'}}"></script>
 		<script src="{{$angular_path.'js/services.js'}}"></script>
 		
