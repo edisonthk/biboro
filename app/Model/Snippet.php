@@ -1,10 +1,12 @@
-<?php namespace App;
+<?php namespace App\Model;
 
-use App\Tag;
-use App\Snippet;
+use App\Model\Tag;
+use App\Model\Snippet;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Snippet extends \Eloquent {
+class Snippet extends Model {
 
 	/**
 	 * The database table used by the model.
@@ -16,7 +18,7 @@ class Snippet extends \Eloquent {
 	public $timestamps = true;
 
 	public function tags(){
-		return $this->belongsToMany('App\Tag','snippet_tag','snippet_id','tag_id');
+		return $this->belongsToMany('App\Model\Tag','snippet_tag','snippet_id','tag_id');
 	}
 
 	public function getCreatorName(){

@@ -4,7 +4,7 @@ use Request;
 use Response;
 use Config;
 use App\Http\Controllers\Controller;
-use App\Snippet;
+use App\Model\Snippet;
 use Mobile_Detect;
 
 class HomeController extends Controller {

@@ -1,7 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use Response;
-use App\Account;
+use App\Model\Account;
 use Illuminate\Routing\Controller as BaseController;
 
 
@@ -51,12 +51,12 @@ class AccountController extends BaseController {
 
 	public function getDevSignin()
 	{
-		$result = $this->accountServices->login(1);
+		$result = $this->accountServices->login(23);
 		if($result["success"]) {
-			return redirect('/account/success');	
+			return response()->json("success to login", 200);
 		}
         
-        return redirect('/account/success?error='.$result["message"]);
+        return response()->json("fail to login", 403);
 	}
 
 

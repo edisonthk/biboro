@@ -1,17 +1,19 @@
 <?php namespace App\Http\Controllers;
 
 use \Response;
-use App\Tag;
-use App\Snippet;
-use Illuminate\Routing\Controller as BaseController;
+use App\Model\Tag;
+use App\Model\Snippet;
 use App\Http\Controllers\DraftController;
+use App\Edisonthk\SnippetService;
+
+use Illuminate\Routing\Controller as BaseController;
 
 class SnippetController extends BaseController {
 
 	private $snippet_services;
 
 	public function __construct(
-		\App\Edisonthk\SnippetService $snippet_services
+        SnippetService $snippet_services
 	) {
         $this->middleware('auth.login', ['except' => ['index', 'show', 'search']]);
 

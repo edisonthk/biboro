@@ -1,6 +1,6 @@
 <?php namespace App\Http\Controllers;
 
-use App\Tag;
+use App\Model\Tag;
 use Illuminate\Routing\Controller as BaseController;
 
 class TagController extends BaseController {

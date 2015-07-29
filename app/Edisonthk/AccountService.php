@@ -2,7 +2,7 @@
 
 use Session;
 use Cookie;
-use App\Account;
+use App\Model\Account;
 
 class AccountService {
 
@@ -65,6 +65,10 @@ class AccountService {
         }
 
         return null;
+    }
+
+    public function accountExists($userId) {
+        return Account::where("id","=",$userId)->count() > 0;
     }
 
     public function setRememberToken() {

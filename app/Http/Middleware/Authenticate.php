@@ -1,6 +1,8 @@
 <?php namespace App\Http\Middleware;
 
 use Closure;
+use Cookie;
+use Session;
 use Illuminate\Contracts\Auth\Guard;
 
 class Authenticate {
@@ -32,19 +34,11 @@ class Authenticate {
 	 */
 	public function handle($request, Closure $next)
 	{
-		if ($this->auth->guest())
-		{
-			if ($request->ajax())
-			{
-				return response('Unauthorized.', 401);
-			}
-			else
-			{
-				return redirect()->guest('auth/login');
-			}
+		if(Session::has("user") && array_key_exists("id", Session::get("user"))) {
+			return $next($request);
+		}else{
+			return response()->json(["error" => "Required to login"], 401);
 		}
-
-		return $next($request);
 	}
 
 }

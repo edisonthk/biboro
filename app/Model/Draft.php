@@ -1,4 +1,4 @@
-<?php namespace App;
+<?php namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,7 +14,7 @@ class Draft extends Model {
 	public $timestamps = true;
 
 	public function tags(){
-		return $this->belongsToMany('App\Tag','draft_tag','draft_id','tag_id');
+		return $this->belongsToMany('App\Model\Tag','draft_tag','draft_id','tag_id');
 	}
 
 	public function getCreatorName(){
@@ -28,8 +28,6 @@ class Draft extends Model {
 
 	public function tagsave($tags) {
 
-		\DB::delete('delete from draft_tag where draft_id = ?',array($this->id));
-		
 		$new_tags = [];
 		foreach ($tags as $tag_name) {
 			$tag = Tag::createIfNotExists($tag_name);

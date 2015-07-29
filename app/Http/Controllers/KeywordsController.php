@@ -1,7 +1,7 @@
 <?php namespace App\Http\Controllers;
 
-use \App\Keyword;
-use \App\Snippet;
+use \App\Model\Keyword;
+use \App\Model\Snippet;
 use \Request;
 use \Response;
 use Illuminate\Routing\Controller as BaseController;

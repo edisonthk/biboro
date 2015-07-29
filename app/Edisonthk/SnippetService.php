@@ -1,6 +1,13 @@
 <?php namespace App\Edisonthk;
 
+use App\Model\Snippet;
+
 class SnippetService {
+
+    public function get($id)
+    {
+        return Snippet::find($id);
+    }
 
 	
 	public function recordKeywords($kw) {
