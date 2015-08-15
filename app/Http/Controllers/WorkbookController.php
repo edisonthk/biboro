@@ -152,6 +152,8 @@ class WorkbookController extends Controller
         }
 
         $workbook->delete();
+
+        return response()->json("workbook deleted",200);
     }
 
 

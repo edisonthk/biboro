@@ -4,10 +4,36 @@ use App\Model\Snippet;
 
 class SnippetService {
 
-    public function get($id)
+    private $account;
+
+    public function __construct(AccountService $account) {
+        $this->account = $account;
+    }
+
+    public function get($id = null)
     {
+        if(is_null($id)) {
+            $user = $this->account->getLoginedUserInfo();
+            return Snippet::where("account_id","=",$user["id"])->get();
+        }
         return Snippet::find($id);
     }
+
+    public function createAndSave($title, $content, $tags)
+    {
+        $snippet = new Snippet;
+        $snippet->title         = $title;
+        $snippet->content       = $content;
+        $snippet->timestamps    = true;
+        $snippet->lang          = "jp";
+        $snippet->account_id    = \Session::get("user")["id"];
+        $snippet->save();
+
+        $snippet->tagsave($tags);
+
+        return $snippet;
+    }
+
 
 	
 	public function recordKeywords($kw) {
@@ -26,6 +52,7 @@ class SnippetService {
 		$temp["tags"] = $snippet->tags()->getResults()->toArray();
 		$temp["creator_name"] = $snippet->getCreatorName();
 		$temp["editable"] = (\Session::has("user") && \Session::get("user")["id"] == $snippet->account_id);
+        $temp["reference"] = $snippet->reference()->getResults();
 		
 		return $temp;
 	}
@@ -76,7 +103,9 @@ class SnippetService {
 		$rules = array(
 			'title'       => 'required',
 			'content'      => 'required',
-			'tags'      => 'required'
+
+            // From v1, tags are not more required input anymore
+			// 'tags'      => 'required'
 		);
 
 		return \Validator::make($inputs, $rules);

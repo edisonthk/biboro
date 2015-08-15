@@ -5,19 +5,24 @@ use App\Model\Tag;
 use App\Model\Snippet;
 use App\Http\Controllers\DraftController;
 use App\Edisonthk\SnippetService;
+use App\Edisonthk\FollowService;
+use App\Edisonthk\CommentService;
 
 use Illuminate\Routing\Controller as BaseController;
 
 class SnippetController extends BaseController {
 
-	private $snippet_services;
+	private $snippet;
+    private $follow;
+    private $comment;
 
-	public function __construct(
-        SnippetService $snippet_services
-	) {
+	public function __construct(SnippetService $snippet, FollowService $follow, CommentService $comment) 
+    {
         $this->middleware('auth.login', ['except' => ['index', 'show', 'search']]);
 
-        $this->snippet_services = $snippet_services;
+        $this->snippet = $snippet;
+        $this->follow  = $follow;
+        $this->comment = $comment;
 	}
 
 	/**
@@ -27,12 +32,36 @@ class SnippetController extends BaseController {
 	 */
 	public function index(){
 
-		$snippets = array();
-		foreach (Snippet::orderBy('updated_at','desc')->get(['id','title','updated_at']) as $snippet) {		//条件付けのときは->get()が必要
+        $query = function($q) {
+            return $q->orderBy("updated_at","desc");
+        };
 
-			array_push($snippets, $this->snippet_services->beautifySnippetObject($snippet)); 
 
+        $snippets = [];
+		foreach ($this->follow->getFollowingSnippets(null, $query) as $snippet) {		//条件付けのときは->get()が必要
+			array_push($snippets, $this->snippet->beautifySnippetObject($snippet)); 
 		}
+
+        foreach ($this->snippet->get() as $snippet) {       //条件付けのときは->get()が必要
+            array_push($snippets, $this->snippet->beautifySnippetObject($snippet)); 
+        }
+
+
+        // remove duplicate
+        $filteredSnippets = [];
+        foreach ($snippets as $snippet) {
+            $found = false;
+            foreach ($filteredSnippets as $filteredSnippet) {
+                if($filteredSnippet["id"] == $snippet["id"]) {
+                    $found = true;
+                    break;
+                }
+            }
+
+            if(!$found) {
+                $filteredSnippets[] = $snippet;
+            }
+        }
 		
 		return \Response::json($snippets);
 	}	
@@ -47,7 +76,7 @@ class SnippetController extends BaseController {
 		$snippet = DraftController::read();
 
 		if(!is_null($snippet)) {
-			$snippet = $this->snippet_services->beautifySnippetObject($snippet);	
+			$snippet = $this->snippet->beautifySnippetObject($snippet);	
 
 			if(array_key_exists("snippet_id", $snippet)) {
 				$snippet["id"] = $snippet["snippet_id"];
@@ -67,27 +96,23 @@ class SnippetController extends BaseController {
 	{
 		// process the login
 		$inputs = \Request::all();
-		$validator = $this->snippet_services->validate($inputs);
+		$validator = $this->snippet->validate($inputs);
 
 		if ($validator->fails()) {
 			return \Response::json(["error"=>$validator->messages()],400);
 		} else {
 			// store
-			$snippet = new Snippet;
-			$snippet->title       	= \Input::get('title');
-			$snippet->content     	= \Input::get('content');
-			$snippet->timestamps 	= true;
-			$snippet->lang 			= "jp";
-			$snippet->account_id 	= \Session::get("user")["id"];
-			$snippet->save();
+            $title    = \Input::get('title');
+            $content  = \Input::get('content');
+            $tags     = $inputs["tags"];
 
-			$snippet->tagsave($inputs["tags"]);
+			$snippet = $this->snippet->createAndSave($title, $content, $tags);
 
 			// destroy draft as real data is stored to database
 			DraftController::destroy();
 
 		
-			$result = $this->snippet_services->beautifySnippetObject($snippet);
+			$result = $this->snippet->beautifySnippetObject($snippet);
 			return \Response::json($result);
 		}
 	}
@@ -107,7 +132,9 @@ class SnippetController extends BaseController {
 			return Response::json("", 404);
 		}
 
-		$result = $this->snippet_services->beautifySnippetObject($snippet);
+        $snippet->load("comments");
+
+		$result = $this->snippet->beautifySnippetObject($snippet);
 		return \Response::json($result);
 	}
 
@@ -128,7 +155,7 @@ class SnippetController extends BaseController {
 		}
 
 		if(!is_null($snippet)) {
-			$snippet = $this->snippet_services->beautifySnippetObject($snippet);	
+			$snippet = $this->snippet->beautifySnippetObject($snippet);	
 
 			if(array_key_exists('snippet_id', $snippet)){
 				$snippet["id"] = $snippet["snippet_id"];
@@ -173,7 +200,7 @@ class SnippetController extends BaseController {
 		);
 		$validator = Validator::make(Input::all(), $rules);
 */
-		$validator = $this->snippet_services->validate(\Request::all());
+		$validator = $this->snippet->validate(\Request::all());
 		// process the login
 		if ($validator->fails()) {
 
@@ -200,7 +227,7 @@ class SnippetController extends BaseController {
 			// redirect
 			\Session::flash('message', 'Successfully created snippet!');
 
-			$result = $this->snippet_services->beautifySnippetObject($snippet);
+			$result = $this->snippet->beautifySnippetObject($snippet);
 			return \Response::json($result);
 		}
 	}

@@ -1,6 +1,7 @@
 <?php namespace App\Edisonthk;
 
 use App\Model\Follow;
+use App\Model\Snippet;
 
 class FollowService {
 
@@ -26,6 +27,92 @@ class FollowService {
             return Follow::where("account_id","=",$user["id"])->get();
         }
         return Follow::where("account_id","=",$userId)->get();
+    }
+
+    private function getItemsByModel($model, $userId)
+    {
+        if(is_null($userId)) {
+            $user = $this->account->getLoginedUserInfo();
+            return $model->where("account_id","=",$user["id"])->get();
+        }
+        return $model->where("account_id","=",$userId)->get();   
+    }
+
+    private function getItemIdsByModel($model, $userId)
+    {
+        if(is_null($userId)) {
+            $user = $this->account->getLoginedUserInfo();
+            return $model->where("account_id","=",$user["id"])->lists("target");
+        }
+        return $model->where("account_id","=",$userId)->lists("target");   
+    }
+
+    public function getFollowingUsers($userId = null)
+    {
+        $model = Follow::where("type","=",self::FOLLOW_USER);
+
+        return $this->getItemsByModel($model, $userId);
+    }
+
+    public function getFollowingTags($userId = null)
+    {
+        $model = Follow::where("type","=",self::FOLLOW_TAG);
+
+        return $this->getItemsByModel($model, $userId);
+    }
+
+    public function getFollowingWorkbooks($userId = null)
+    {
+        $model = Follow::where("type","=",self::FOLLOW_WORKBOOK);
+
+        return $this->getItemsByModel($model, $userId);
+    }
+
+    public function getFollowingUserId($userId = null)
+    {
+        $model = Follow::where("type","=",self::FOLLOW_USER);
+
+        return $this->getItemIdsByModel($model, $userId);
+    }
+
+    public function getFollowingTagId($userId = null)
+    {
+        $model = Follow::where("type","=",self::FOLLOW_TAG);
+
+        return $this->getItemIdsByModel($model, $userId);
+    }
+
+    public function getFollowingWorkbookId($userId = null)
+    {
+        $model = Follow::where("type","=",self::FOLLOW_WORKBOOK);
+
+        return $this->getItemIdsByModel($model, $userId);
+    }
+
+    public function getFollowingSnippets($userId = null, $queryCallback = null)
+    {
+        $workbookIds = $this->getFollowingWorkbookId();
+        $tagIds      = $this->getFollowingTagId();
+        $userIds     = $this->getFollowingUserId();
+        
+        $duplicateSnippetIds = \DB::table("snippet_tag")->whereIn("tag_id",$tagIds)->lists("snippet_id");
+        $duplicateSnippetIds = array_merge($duplicateSnippetIds, \DB::table("workbook_snippet")->whereIn("workbook_id",$workbookIds)->lists("snippet_id"));
+
+        // filter new id lists without duplicate
+        $snippetIds = [];
+        foreach ($duplicateSnippetIds as $value) {
+            if(!in_array($value, $snippetIds)) {
+                $snippetIds[] = $value;
+            }
+        }
+
+        $model = Snippet::whereIn("id",$snippetIds)->whereIn("account_id",$userIds,"or");
+
+        if(is_callable($queryCallback)) {
+            $model = $queryCallback($model);
+        }
+
+        return $this->getItemsByModel($model, $userId);
     }
 
     public function follow($type, $target)

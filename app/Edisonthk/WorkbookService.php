@@ -10,10 +10,12 @@ class WorkbookService {
     const PERMIT_MODIFY = 2;
 
     private $account;
+    private $snippet;
 
     public function __construct(AccountService $account, SnippetService $snippet)
     {
         $this->account = $account;
+        $this->snippet = $snippet;
     }
 
     public function getByAccountId($accountId) 
