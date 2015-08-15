@@ -38,16 +38,7 @@ Route::group(['prefix' => '/api/v1'], function () {
     // Account routing
     // All kinds of user auth is using in this method
     Route::controller('account','AccountController');
-
-    Route::get("test",function() {
-        $u = \App\Model\Account::all();
-        echo "<pre>";
-        echo "id,name,email,level,locate,lang,google_id,created_at,updated_at\n";
-        foreach ($u as $key => $value) {
-            echo "{$value->id},{$value->name},{$value->email},{$value->level},{$value->locate},{$value->lang},{$value->google_id},{$value->created_at},{$value->updated_at}\n";
-        }
-        echo "</pre>";
-    });
+    
 });
 
 // extension

@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder {
         
         $this->call('DraftTableSeeder');
         $this->call('DraftTagTableSeeder');
+        
+        $this->call('FollowTableSeeder');
 	}
 
 }
