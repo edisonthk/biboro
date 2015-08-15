@@ -14,9 +14,11 @@ class CreateUsersTable extends Migration {
 	{
 		Schema::table('account_table', function(Blueprint $table)
 		{
-			$table->string('password', 60)->nullable();
 			$table->rememberToken();
 		});
+
+        \DB::statement("alter table account_table modify password varchar(60) null");
+
 	}
 
 	/**
