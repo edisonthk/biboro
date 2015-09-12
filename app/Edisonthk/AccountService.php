@@ -48,14 +48,16 @@ class AccountService {
 
     public function register($name, $email, $password)
     {
-        return Account::create([
+        $account = new Account;
+        $account->password = bcrypt($password);
+        $account->email    = $email;
+
+        $input = [
             'name' => $name,
-            'email' => $email,
-            'password' => bcrypt($password),
-            'locate' => '',
             'lang' => 'ja',
             'level' => 0,
-        ]);
+        ];
+        return $this->save($account, $input);
     }
 
     public function validateRegister($input)
