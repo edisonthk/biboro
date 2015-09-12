@@ -17,7 +17,7 @@ class CommentService {
     public function get($snippet,$id = null)
     {
         if(is_null($id)) {
-            return Comment::where("snippet_id","=",$snippet->id)->get();
+            return Comment::with("account")->where("snippet_id","=",$snippet->id)->get();
         }
         return Comment::find($id);
     }
