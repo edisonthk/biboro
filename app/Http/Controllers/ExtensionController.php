@@ -77,7 +77,7 @@ class ExtensionController extends Controller
             $this->workbook->appendSnippet($workbook, $snippet);
         }
 
-        $snippet = $this->snippet->beautifySnippetObject($snippet);
+        $this->snippet->beautifySnippetObject($snippet);
 
         return Response::json($snippet);
     }

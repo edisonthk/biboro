@@ -37,14 +37,10 @@ class Snippet extends Model {
         return $this->hasMany("App\Model\Comment");
     }
 
-	public function getCreatorName(){
-		$acc = Account::find($this->account_id);
-		if(is_null($acc)){
-			return "null";
-		}
-
-		return $acc->name;
-	}
+	public function creator()
+    {
+        return $this->hasOne('App\Model\Account','id','account_id');
+    }
 
 	//$id,$name,$tag_id,$snippet_id
 	public function tagsave($tags){

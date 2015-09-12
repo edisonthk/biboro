@@ -1,5 +1,6 @@
 <?php namespace App\Edisonthk;
 
+use Auth;
 use App\Model\Snippet;
 
 class SnippetService {
@@ -14,19 +15,32 @@ class SnippetService {
     {
         if(is_null($id)) {
             $user = $this->account->getLoginedUserInfo();
-            return Snippet::where("account_id","=",$user["id"])->get();
+            return Snippet::where("account_id","=",$user->id)->get();
         }
         return Snippet::find($id);
     }
 
+    public function getMy()
+    {
+        return $this->getMyWith();
+    }
+
+    public function getMyWith($loader = [])
+    {
+        $user = $this->account->getLoginedUserInfo();
+        return Snippet::with($loader)->where("account_id","=",$user->id)->get();
+    }
+
     public function createAndSave($title, $content, $tags)
     {
+        $user = $this->account->getLoginedUserInfo();
+
         $snippet = new Snippet;
         $snippet->title         = $title;
         $snippet->content       = $content;
         $snippet->timestamps    = true;
         $snippet->lang          = "jp";
-        $snippet->account_id    = \Session::get("user")["id"];
+        $snippet->account_id    = $user->id;
         $snippet->save();
 
         $snippet->tagsave($tags);
@@ -46,15 +60,32 @@ class SnippetService {
 		file_put_contents($fileName,$outputkw,FILE_APPEND | LOCK_EX);
 	}
 
-	public function beautifySnippetObject($snippet){
-		$temp = $snippet->toArray();
-		$temp["updated_at"] = $this->convertToUserViewTimestamp($temp["updated_at"]);
-		$temp["tags"] = $snippet->tags()->getResults()->toArray();
-		$temp["creator_name"] = $snippet->getCreatorName();
-		$temp["editable"] = (\Session::has("user") && \Session::get("user")["id"] == $snippet->account_id);
-        $temp["reference"] = $snippet->reference()->getResults();
-		
-		return $temp;
+    public function multipleEagerLoadWithTidy(&$snippets) {
+
+        $snippetsId = [];
+        foreach ($snippets as $snippet) {
+            $snippetsId[] = $snippet->id;
+        }
+
+        $snippets = [];
+
+        $filteredSnippets = Snippet::with("tags","creator","reference")->whereIn("id",$snippetsId)->get();
+        foreach ($filteredSnippets as $snippet) {
+            $this->beautifySnippetObject($snippet, false);
+            $snippets[] = $snippet;
+        }
+
+    }
+
+	public function beautifySnippetObject(&$snippet, $load = true){
+
+        if($load) {
+            $snippet->load("tags","creator","reference");    
+        }
+        
+		$snippet->readable_updated_at   = $this->convertToUserViewTimestamp($snippet->updated_at);
+		$snippet->editable              = (Auth::check() && Auth::id() == $snippet->account_id);
+        
 	}
 
 	public function convertToUserViewTimestamp($timestamp){

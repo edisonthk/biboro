@@ -1,5 +1,6 @@
 <?php namespace App\Edisonthk;
 
+use App\Model\Snippet;
 use App\Model\Workbook;
 use App\Model\WorkbookPermission;
 
@@ -28,24 +29,27 @@ class WorkbookService {
         $user = $this->account->getLoginedUserInfo();
         
         if(is_null($workbookId)) {
-            return Workbook::where("account_id","=",$user["id"])->get();    
+            return Workbook::where("account_id","=",$user->id)->get();    
         }
 
-        return Workbook::find($workbookId);
+        return Workbook::where("id","=",$workbookId)->first();
     }
 
 
-    public function create($title)
+    public function create($title, $description = "")
     {
         $user = $this->account->getLoginedUserInfo();
         
         $workbook = new Workbook;
-        $workbook->account_id = $user["id"];
+        $workbook->account_id = $user->id;
         $workbook->title = $title;
+        $workbook->description = $description;
         $workbook->save();
+
+        return $workbook;
     }
 
-    public function renameTitle($workbook, $title)
+    public function update(Workbook &$workbook, $title, $description = null)
     {
         $user = $this->account->getLoginedUserInfo();
         if(!$this->editable($workbook)) {
@@ -53,10 +57,33 @@ class WorkbookService {
         }
 
         $workbook->title = $title;
+        if(!is_null($description)) {
+            $workbook->description = $description;
+        }
         $workbook->save();
     }
 
-    public function appendSnippet($workbook, $snippet)
+    public function detachAllWorkbook(Snippet $snippet)
+    {
+        $user = $this->account->getLoginedUserInfo();
+
+        $snippet->workbooks()->where("account_id","=",$user->id)->detach();
+    }
+
+    public function switchSnippet(Workbook $workbook, Snippet $snippet)
+    {
+        if(!$this->editable($workbook)) {
+            throw new Exception\NotAllowedToEdit;
+        }
+
+        if(is_null($workbook)) {
+            $snippet->workbooks()->sync([]);
+        }else{
+            $snippet->workbooks()->sync([$workbook->id]);
+        }
+    }
+
+    public function appendSnippet(Workbook $workbook,Snippet $snippet)
     {
         if(!$this->editable($workbook)) {
             throw new Exception\NotAllowedToEdit;
@@ -64,13 +91,17 @@ class WorkbookService {
 
         if($workbook->snippets()->where("snippet_id","=",$snippet->id)->count() <= 0) {
             $workbook->snippets()->save($snippet);
-        }else {
-            throw new Exception\SnippetFoundInWorkbook;
         }
     }
 
-    public function sliceSnippet($workbook, $snippet)
+    public function sliceSnippet(Workbook $workbook = null,Snippet $snippet)
     {
+        if(is_null($workbook)) {
+
+            $snippet->workbooks()->detach();
+            return;
+        }
+
         if(!$this->editable($workbook)) {
             throw new Exception\NotAllowedToEdit;
         }
@@ -79,18 +110,18 @@ class WorkbookService {
     }
 
 
-    public function editable($workbook)
+    public function editable(Workbook $workbook)
     {
         $user = $this->account->getLoginedUserInfo();
 
-        if($this->havePermission($workbook, self::PERMIT_MODIFY, $user["id"])) {
+        if($this->havePermission($workbook, self::PERMIT_MODIFY, $user->id)) {
             return true;
         }
 
         return false;
     }
 
-    public function getPermission($workbook, $accountId = null)
+    public function getPermission(Workbook $workbook, $accountId = null)
     {
         $model = WorkbookPermission::where("workbook_id","=",$workbook->id);
 
@@ -101,7 +132,7 @@ class WorkbookService {
         return $model->get();
     }
 
-    public function havePermission($workbook, $type, $accountId)
+    public function havePermission(Workbook $workbook, $type, $accountId)
     {
         if($workbook->account_id == $accountId) {
             return true;
@@ -116,10 +147,10 @@ class WorkbookService {
         return false;
     }
 
-    public function grantPermission($workbook, $permits, $accountId)
+    public function grantPermission(Workbook $workbook, $permits, $accountId)
     {
         $user = $this->account->getLoginedUserInfo();   
-        if(!$this->havePermission($workbook, self::PERMIT_MANAGE_USER, $user["id"])) {
+        if(!$this->havePermission($workbook, self::PERMIT_MANAGE_USER, $user->id)) {
             throw new Exception\PermissionDenied;
         }
 
@@ -128,7 +159,7 @@ class WorkbookService {
         foreach ($permits as $permission_type) {
             $workbookPermission = new WorkbookPermission;
             $workbookPermission->workbook_id         = $workbook->id;
-            $workbookPermission->assigner_account_id = $user["id"];
+            $workbookPermission->assigner_account_id = $user->id;
             $workbookPermission->permission_type     = $permission_type;
             $workbookPermission->target_account_id   = $accountId;
             $workbookPermission->save();

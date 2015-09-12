@@ -6,19 +6,37 @@ html, body {
 }
 
 body {
-    background-color: #f3f3f3;
+    background-color: white;
+}
+
+* {
+    font-family: Roboto, Verdana, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+}
+
+input:focus, textarea:focus {
+    outline: 0;
+}
+
+.btn {
+    border: 0;
+    background-color: #545353;
+    color: white;
+    padding: 4px 14px;
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
 }
 
 .container {
-    width: 500px;
+    width: 810px;
     margin: 0 auto;
-}
-.container > * {
-    padding: 13px;
+    position: relative;
 }
 
 textarea.form-control {
-    height: 150px;
+    height: 300px;
 }
 
 .form-control {
@@ -49,13 +67,110 @@ textarea.form-control {
 .topbar {
     width: 100%;
 }
-.topbar > .title {
+.topbar > .logo {
     float:left;
+    padding-left: 7px;
 }
 .topbar > .user {
     float:right;
-    margin-right: 30px;
+    margin: 14px 30px;
 }
 .topbar > .user .signout {
     font-size: 10px;
+}
+
+.editor-content {
+    width: 100%;
+}
+
+.editor-content .col-left {
+    width: 50%;
+    float: left;
+    height: 100%;
+
+}
+
+#md-content p{
+    font-size: 16px;
+}
+
+.editor-content form {
+    background-color: #dcdcdc;
+    padding: 8px;
+}
+
+.tabs {
+    display: inline-block;
+        background-color: transparent;
+    padding-bottom: 0;
+    position: relative;
+    top: 5px;
+}
+.tabs > .pane {
+    float: left;
+    line-height: 30px;
+    display: inline-block;
+    margin-bottom: -1px;
+    width: 100px;
+    text-align: center;
+}
+.tabs > .pane:hover {
+    cursor: pointer;
+}
+.tabs > .pane.active {
+    border-bottom-color: #dcdcdc;
+}
+.tabs > .pane.active {
+    background-color: white;
+    border-bottom: 30px solid #dcdcdc;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    height: 0;
+    width: 80px;
+}
+
+.title {
+    display: inline-block;
+    font-size: 24px;
+    border-bottom: 5px solid #515151;
+    padding-bottom: 6px;
+    margin-bottom: 15px;
+}
+
+.md {
+    background-color: #FBFBFB;
+}
+
+.md > div {
+    padding: 7px;
+}
+
+.errMessages {
+    position: absolute;
+    display: block;
+    width: 250px;
+    top: 30px;
+    left: calc(50% - 125px);
+    background-color: rgb(192, 72, 72);
+    color: white;
+    font-weight: bold;
+}
+
+.tooltips  {
+  transform:translateY(20px);
+  -o-transform:translateY(20px);
+  -moz-transform:translateY(20px);
+  -webkit-transform:translateY(20px);
+  opacity: 0;
+  transition: all 1s ease;
+  -o-transition: all 1s ease;
+  -moz-transition: all 1s ease;
+  -webkit-transition: all 1s ease;
+}
+.tooltips.show {
+  opacity: 1;
+  transform:translateY(0);
+  -o-transform:translateY(0);
+  -moz-transform:translateY(0);
+  -webkit-transform:translateY(0);
 }

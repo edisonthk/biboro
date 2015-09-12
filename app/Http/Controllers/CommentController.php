@@ -21,8 +21,20 @@ class CommentController extends Controller
     
     public function __construct(SnippetService $snippet, CommentService $comment) 
     {
+        $this->middleware('auth', ['only' => ['store', 'update','destroy']]);
+
         $this->comment = $comment;
         $this->snippet = $snippet;
+    }
+
+    public function index($snippetId)
+    {
+        $snippet = $this->snippet->get($snippetId);
+        if(is_null($snippet)) {
+            return response()->json("snippet not found", 403);
+        }
+
+        return $this->comment->getAndResponse($snippet);
     }
 
     /**
@@ -31,7 +43,7 @@ class CommentController extends Controller
      * @param  Request  $request
      * @return Response
      */
-    public function store($snippetId,Request $request)
+    public function store($snippetId, Request $request)
     {
         //
         $snippet = $this->snippet->get($snippetId);
@@ -45,9 +57,9 @@ class CommentController extends Controller
         }
 
         $comment = $request->input("comment");
-        $this->comment->createAndSave($snippet, $comment);
+        $modelComment = $this->comment->createAndSave($snippet, $comment);
 
-        return response()->json("commented",200);
+        return response()->json($this->comment->makeResponse($modelComment),200);
     }
 
     /**
@@ -80,9 +92,9 @@ class CommentController extends Controller
         }
 
         $comment = $request->input("comment");
-        $this->comment->updateAndSave($commentModel, $comment);
+        $commentModel = $this->comment->updateAndSave($commentModel, $comment);
 
-        return response()->json("comment is updated", 200);
+        return response()->json($this->comment->makeResponse($commentModel), 200);
     }
 
     /**

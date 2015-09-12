@@ -31,7 +31,6 @@ class CreateUsersTable extends Migration {
 		Schema::table('account_table', function(Blueprint $table) 
 		{
 			$table->dropColumn('email');
-			$table->dropColumn('password');
 			$table->dropColumn('remember_token');
 		});
 	}

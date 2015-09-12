@@ -20,25 +20,44 @@ Route::group(['prefix' => '/api/v1'], function () {
     
     Route::post('feedback','FeedbackController@send');
 
+    Route::resource('workbook', 'WorkbookController');
+    Route::resource('snippet/{snippetId}/comment', 'CommentController');
+    
+
     Route::group(['middleware' => 'auth'], function() {
         Route::post('images/upload', 'ImageController@upload');
-        Route::resource('snippet/{snippetId}/comment', 'CommentController');
+        
         Route::put('snippet/draft/{id?}', 'SnippetController@saveDraft');
-        Route::put('workbook/{id}/rename','WorkbookController@rename');
+
+        Route::get('workbook/my','WorkbookController@my');
+        Route::put('workbook/{id}/fork','WorkbookController@fork');
         Route::get('workbook/permission/{workbookId}','WorkbookController@showPermission');
         Route::put('workbook/permission/{workbookId}','WorkbookController@grantPermission');
-        Route::resource('workbook', 'WorkbookController');
-
+        
         Route::post('follow', 'FollowController@follow');
         Route::delete('follow', 'FollowController@unfollow');
     });
     
-
+    Route::resource('profile', 'ProfileController');
 
     // Account routing
     // All kinds of user auth is using in this method
-    Route::controller('account','AccountController');
+    Route::get('account/userinfo','AccountController@getUserinfo');
     
+});
+
+Route::get('/account/oauth2callback', 'AccountController@getOauth2callback');
+Route::group(['prefix' => '/auth'], function() {
+    // Authentication routes...
+    Route::get('login', 'AuthController@getLogin');
+    Route::post('login', 'AuthController@postLogin');
+    Route::get('logout', 'AuthController@getLogout');
+
+    // Registration routes...
+    Route::get('register', 'AuthController@getRegister');
+    Route::post('register', 'AuthController@postRegister');
+
+    Route::get('errors', 'AuthController@getErrorAuth');
 });
 
 // extension
@@ -54,20 +73,20 @@ Route::post('/thisistest/json/post', 'HomeController@postPlayground');
 Route::get('/log/kws', 'LogController@getKeywordLog');
 
 
-Route::get('/_p/', function(){
-	return redirect('/');
-});
+// Route::get('/_p/', function(){
+// 	return redirect('/');
+// });
 
-// old version redirect
-Route::get('/_p/snippet', function() { return redirect('/snippet'); });
-Route::get('/_p/snippet/{id?}', function($id = '') { return redirect('/snippet/'.$id); });
-Route::get('/snippets', function() { return redirect('/snippet'); });
-Route::get('/snippets/{id?}', function($id = '') { return redirect('/snippet/'.$id);});
+// // old version redirect
+// Route::get('/_p/snippet', function() { return redirect('/snippet'); });
+// Route::get('/_p/snippet/{id?}', function($id = '') { return redirect('/snippet/'.$id); });
+// Route::get('/snippets', function() { return redirect('/snippet'); });
+// Route::get('/snippets/{id?}', function($id = '') { return redirect('/snippet/'.$id);});
 
-// AngularJS 
-Route::group(['middleware' => ['auth.autologin']], function() {
+// // AngularJS 
+// Route::group(['middleware' => ['auth.autologin']], function() {
 
-    Route::get('/snippet/{a?}/{b?}/{c?}', 'HomeController@index');
-    Route::get('/', 'HomeController@index');
+//     Route::get('/snippet/{a?}/{b?}/{c?}', 'HomeController@index');
+//     Route::get('/', 'HomeController@index');
 
-});
+// });

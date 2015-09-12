@@ -34,7 +34,7 @@ class Authenticate {
 	 */
 	public function handle($request, Closure $next)
 	{
-		if(Session::has("user") && array_key_exists("id", Session::get("user"))) {
+		if($this->auth->check()) {
 			return $next($request);
 		}else{
 			return response()->json(["error" => "Required to login"], 401);

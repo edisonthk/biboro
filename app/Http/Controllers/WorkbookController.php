@@ -18,6 +18,7 @@ class WorkbookController extends Controller
 
     private $workbook;
     private $snippet;
+    private $pagination;
 
     private $updatedMessage;
     private $notFoundJsonMessage;
@@ -26,11 +27,15 @@ class WorkbookController extends Controller
 
     public function __construct(
             \App\Edisonthk\WorkbookService $workbook,
-            \App\Edisonthk\SnippetService $snippet
+            \App\Edisonthk\SnippetService $snippet,
+            \App\Edisonthk\PaginationService $pagination
         ) {
+
+        $this->middleware('auth', ['only' => ['index','store', 'update','destroy']]);
 
         $this->workbook = $workbook;
         $this->snippet = $snippet;
+        $this->pagination = $pagination;
 
         $this->notFoundJsonMessage = ["error" => "not found"];
         $this->permissionDeniedJsonMessage = ["error" => "permission denied"];
@@ -65,9 +70,9 @@ class WorkbookController extends Controller
         //
         $title = $request->get("title");
 
-        $this->workbook->create($title);
+        $workbook = $this->workbook->create($title);
 
-        return response()->json("created",200);
+        return response()->json($workbook,200);
     }
 
     /**
@@ -76,13 +81,32 @@ class WorkbookController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
-        //
-        $workbook = $this->workbook->get($id);
-        $workbook->load("snippets");
 
-        return response()->json($workbook);
+        // get workbook
+        $workbook = $this->workbook->get($id);
+
+        // make pagination
+        $pagination = $this->pagination->makeWithQuery($workbook->snippets(),$request);
+
+        // paginate snippets
+        $snippets = $pagination["data"];
+
+        // tidy snippets
+        $this->snippet->multipleEagerLoadWithTidy($snippets);
+
+        // get workbook permission
+        $workbook->permissions = $this->workbook->getPermission($workbook);
+        $workbook->snippets    = $snippets;
+
+        // remove unnecessary response
+        unset($pagination["data"]);
+
+        return response()->json([
+            "workbook" => $workbook,
+            "pagination" => $pagination
+        ]);
     }
 
     /**
@@ -91,7 +115,7 @@ class WorkbookController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function update($id, Request $request)
+    public function fork($id, Request $request)
     {
         $workbook = $this->workbook->get($id);
         if(is_null($workbook)) {
@@ -107,7 +131,7 @@ class WorkbookController extends Controller
 
         try {
             if ($action == self::ACTION_PUSH) {
-                $this->workbook->appendSnippet($workbook, $snippet);    
+                $this->workbook->appendSnippet($workbook, $snippet);
             } else if ($action == self::ACTION_SLICE) {
                 $this->workbook->sliceSnippet($workbook, $snippet);
             }
@@ -119,7 +143,7 @@ class WorkbookController extends Controller
         return response()->json("updated", 400);
     }
 
-    public function rename($id, Request $request)
+    public function update($id, Request $request)
     {
         $workbook = $this->workbook->get($id);
         if(is_null($workbook)) {
@@ -127,14 +151,16 @@ class WorkbookController extends Controller
         }
         
         $title = $request->get("title");
+        $description = $request->get("description","");
 
+        
         try {
-            $this->workbook->renameTitle($workbook, $title);    
+            $this->workbook->update($workbook, $title, $description);    
         }catch ( NotAllowedToEdit $e) {
             return response()->json( $permissionDeniedJsonMessage , 403);
         }
         
-        return response()->json( "updated" ,200);
+        return response()->json( $workbook ,200);
     }
 
     /**
@@ -186,5 +212,12 @@ class WorkbookController extends Controller
         }
 
         return response()->json("updated",200);
+    }
+
+    public function my()
+    {
+        $snippets = $this->snippet->getMyWith(["tags","reference","comments","creator"]);
+
+        return response()->json($snippets,200);
     }
 }
