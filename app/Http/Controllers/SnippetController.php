@@ -115,9 +115,9 @@ class SnippetController extends BaseController {
 			return \Response::json(["error"=>$validator->messages()],400);
 		} else {
 			// store
-            $title    = \Input::get('title');
-            $content  = \Input::get('content');
-            $tags     = $inputs["tags"];
+            $title    = $request->get('title');
+            $content  = $request->get('content');
+            $tags     = $request->get("tags", []);
 
 			$snippet = $this->snippet->createAndSave($title, $content, $tags);
 
