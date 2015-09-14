@@ -14,5 +14,10 @@ class Workbook extends Model
         return $this->belongsToMany('App\Model\Snippet','workbook_snippet');
     }
 
+    public function account()
+    {
+        return $this->hasOne('App\Model\Account','id','account_id');
+    }
+
 
 }

@@ -1,6 +1,7 @@
 <?php namespace App\Edisonthk;
 
 use Auth;
+use App\Model\Account;
 use App\Model\Snippet;
 
 class SnippetService {
@@ -20,15 +21,18 @@ class SnippetService {
         return Snippet::find($id);
     }
 
-    public function getMy()
-    {
-        return $this->getMyWith();
+    public function getByUrlPath($urlPath) {
+        return $this->getQueryByUrlPath($urlPath)->get();
     }
 
-    public function getMyWith($loader = [])
+    public function getQueryByUrlPath($urlPath)
     {
-        $user = $this->account->getLoginedUserInfo();
-        return Snippet::with($loader)->where("account_id","=",$user->id)->get();
+        $account = Account::where("url_path","=",$urlPath)->first(["id"]);
+        if(is_null($account)) {
+            throw new Exception\UserNotFound;
+        }
+            
+        return Snippet::with("tags","reference")->where("account_id","=",$account->id);
     }
 
     public function createAndSave($title, $content, $tags)

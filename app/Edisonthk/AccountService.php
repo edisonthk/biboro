@@ -1,6 +1,7 @@
 <?php namespace App\Edisonthk;
 
 use Auth;
+use OAuth;
 use Session;
 use Cookie;
 use Validator;
@@ -46,6 +47,15 @@ class AccountService {
         return '/';
     }
 
+    public function getByUrlPath($urlPath) {
+        $account = Account::where("url_path","=",$urlPath)->first();
+        if(is_null($account)) {
+            throw new Exception\UserNotFound;    
+        }
+        
+        return $account;
+    }
+
     public function register($name, $email, $password)
     {
         $account = new Account;
@@ -82,18 +92,44 @@ class AccountService {
 	}
 
 	public function getLoginedUserInfo() {
-		return Auth::user();
+        $user = Auth::user();
+        // if(empty($user->url_path)) {
+            $urlPath = $this->generateUniqueUrlPath($user->email);
+            $user->url_path = $urlPath;
+            $user->save();
+
+        // }
+		return $user;
 	}
 
+    private function generateUniqueUrlPath($email) {
+        $urlPath = substr($email, 0,strpos($email,"@"));
+
+        $count = 0;
+        $pattern = "/".$urlPath."(.\d+)?$/i";
+        $duplicateUrlPathAccounts = Account::where("url_path","like",$urlPath."%")->get();
+        foreach ($duplicateUrlPathAccounts as $duplicateUrlPathAccount) {
+            if(preg_match($pattern, $duplicateUrlPathAccount->url_path )) {
+                $count += 1;
+            }
+        }
+
+        if($count > 0) {
+            $urlPath .= ".".$count;
+        }
+
+        return $urlPath;
+    }
+
 	public function getOAuthorizationUri() {
-		$googleService = \OAuth::consumer(self::_SERVICE,'http://'.$_SERVER['HTTP_HOST'].'/account/oauth2callback');
+		$googleService = OAuth::consumer(self::_SERVICE,'http://'.$_SERVER['HTTP_HOST'].'/account/oauth2callback');
 		$url = (String)$googleService->getAuthorizationUri(["response_type"=>"token"]);
 		return $url;
 	}
 
 	public function handleOauth2callback(Request $request) {
 
-		$googleService = \OAuth::consumer(self::_SERVICE);
+		$googleService = OAuth::consumer(self::_SERVICE);
         $code = null;
         if($request->has("code")) {
             $code = $request->get("code");

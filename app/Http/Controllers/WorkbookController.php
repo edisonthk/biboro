@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Edisonthk\Exception\MissingLoginedUserInfo;
 use App\Edisonthk\Exception\NotAllowedToEdit;
 use App\Edisonthk\Exception\SnippetFoundInWorkbook;
+use App\Edisonthk\Exception\UserNotFound;
 
 class WorkbookController extends Controller
 {
@@ -19,6 +20,7 @@ class WorkbookController extends Controller
     private $workbook;
     private $snippet;
     private $pagination;
+    private $account;
 
     private $updatedMessage;
     private $notFoundJsonMessage;
@@ -26,6 +28,7 @@ class WorkbookController extends Controller
     private $noPermission;
 
     public function __construct(
+            \App\Edisonthk\AccountService $account,
             \App\Edisonthk\WorkbookService $workbook,
             \App\Edisonthk\SnippetService $snippet,
             \App\Edisonthk\PaginationService $pagination
@@ -33,6 +36,7 @@ class WorkbookController extends Controller
 
         $this->middleware('auth', ['only' => ['index','store', 'update','destroy']]);
 
+        $this->account = $account;
         $this->workbook = $workbook;
         $this->snippet = $snippet;
         $this->pagination = $pagination;
@@ -83,12 +87,36 @@ class WorkbookController extends Controller
      */
     public function show($id, Request $request)
     {
+        $workbook = null;
 
-        // get workbook
-        $workbook = $this->workbook->get($id);
+        $pattern = "/^\d+$/";
+        if(preg_match($pattern,$id)) {
+            // get workbook
+            $workbook = $this->workbook->get($id);
+            $snippetQuery = $workbook->snippets();
+
+            // get workbook permission
+            $workbook->permissions = $this->workbook->getPermission($workbook);
+
+        }else {
+            // get user workbook and $id belongs to $urlPath in this case
+            try {
+                $urlPath = $id;
+                $account = $this->account->getByUrlPath($urlPath);
+                $workbook = [
+                    "title" => $account->name,
+                    "account" => $account,
+                ];
+
+                $snippetQuery = $this->snippet->getQueryByUrlPath($urlPath);
+            }catch(UserNotFound $e) {
+                return response()->json("workbook not found",400);
+            }
+        }
+        
 
         // make pagination
-        $pagination = $this->pagination->makeWithQuery($workbook->snippets(),$request);
+        $pagination = $this->pagination->makeWithQuery($snippetQuery,$request);
 
         // paginate snippets
         $snippets = $pagination["data"];
@@ -96,15 +124,12 @@ class WorkbookController extends Controller
         // tidy snippets
         $this->snippet->multipleEagerLoadWithTidy($snippets);
 
-        // get workbook permission
-        $workbook->permissions = $this->workbook->getPermission($workbook);
-        $workbook->snippets    = $snippets;
-
         // remove unnecessary response
         unset($pagination["data"]);
 
         return response()->json([
             "workbook" => $workbook,
+            "snippets" => $snippets,
             "pagination" => $pagination
         ]);
     }

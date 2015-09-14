@@ -29,10 +29,10 @@ class WorkbookService {
         $user = $this->account->getLoginedUserInfo();
         
         if(is_null($workbookId)) {
-            return Workbook::where("account_id","=",$user->id)->get();    
+            return Workbook::with("account")->where("account_id","=",$user->id)->get();    
         }
 
-        return Workbook::where("id","=",$workbookId)->first();
+        return Workbook::with("account")->where("id","=",$workbookId)->first();
     }
 
 
