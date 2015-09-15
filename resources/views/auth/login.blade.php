@@ -15,19 +15,15 @@
         </div>
 
         <div class="form-group">
-            <div class="form-label">
+            <div class="form-component form-input">
                 <i class="fa fa-envelope"></i>
-            </div>
-            <div class="form-component">
                 <input type="email" name="email" value="{{ old('email') }}" placeholder="{{Lang::get("messages.label.email")}}">
             </div>
         </div>
 
         <div class="form-group">
-            <div class="form-label">
-                <i class="fa fa-key"></i>
-            </div>
-            <div class="form-component">
+            <div class="form-component form-input">
+                <i class="fa fa-key"></i> 
                 <input type="password" name="password" id="password" placeholder="{{Lang::get("messages.label.password")}}">
             </div>
         </div>

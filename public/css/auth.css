@@ -23,7 +23,7 @@ p,span,input,i,small,h1,h2,h3,h4,h5,a {color: #515151;}
 input {
     height: 34px;
     padding: 6px 12px;
-    font-size: 14px;
+    font-size: inherit;
     line-height: 1.42857143;
     background-color: transparent;
     border: 0;
@@ -80,8 +80,6 @@ button { display: block; border: 0; }
 
 .container-outer {
     width: 500px;
-    height: 100%;
-    min-height: 100%;
     display: block;
     margin: 0 auto;
     position: relative;
@@ -116,10 +114,19 @@ button { display: block; border: 0; }
     padding: 10px 13px;
 }
 
-.form-group .form-component input {
-    padding: 8px 5px;
+.form-group .form-component.form-input {
+    padding: 4px 13px;
+    width: 100%;
+    margin-bottom: 7px;
+    background-color: #F7F5F5;
     height: auto;
     border-bottom: 2px solid transparent;
+}
+.form-group .form-component.form-input input {
+    padding: 0;
+}
+.form-group .form-component.form-input .fa {
+    margin-right: 10px;
 }
 .form-group .form-component input:focus {
     border-color: #515151;
@@ -145,14 +152,14 @@ button { display: block; border: 0; }
 .form-group .form-component input:-ms-input-placeholder,
 .form-group .form-component input::-moz-placeholder,
 .form-group .form-component input:-moz-placeholder { /* Firefox 18- */
-   color: #9C9C9C;
+   color: #303030;
 }
 
 .margin-vertical {
     margin: 20px 0;
 }
 
-.form-group .form-label, .form-group .form-component input, .form-group .form-component .btn{
+.form-group .form-label, .form-component.form-input, .form-group .form-component .btn{
     font-size: 20px;
 }
 
@@ -176,7 +183,7 @@ button { display: block; border: 0; }
 .form.register-link-form a:hover {
     text-decoration: underline;
 }
-.or {margin: 10px 0; text-align: center;}
+.or {margin: 6px 0; text-align: center;}
 
 .register-title {
     margin-top: 1.5em;

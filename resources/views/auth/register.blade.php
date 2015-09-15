@@ -16,37 +16,30 @@
     </div>
 
     <div class="form-group">
-        <div class="form-label">
+        <div class="form-component form-input">
             <i class="fa fa-user"></i>
-        </div>
-        <div class="form-component">
             <input type="text" name="name" value="{{ old('name') }}" placeholder="{{Lang::get("messages.label.name")}}">
         </div>
     </div>
 
     <div class="form-group">
-        <div class="form-label">
+        
+        <div class="form-component form-input">
             <i class="fa fa-envelope"></i>
-        </div>
-        <div class="form-component">
             <input type="email" name="email" value="{{ old('email') }}" placeholder="{{Lang::get("messages.label.email")}}">
         </div>
     </div>
 
     <div class="form-group">
-        <div class="form-label">
+        <div class="form-component form-input">
             <i class="fa fa-key"></i>
-        </div>
-        <div class="form-component">
             <input type="password" name="password" id="password" placeholder="{{Lang::get("messages.label.password")}}">
         </div>
     </div>
 
     <div class="form-group">
-        <div class="form-label">
+        <div class="form-component form-input">
             <i class="fa fa-unlock"></i>
-        </div>
-        <div class="form-component">
             <input type="password" name="password_confirmation" id="password" placeholder="{{Lang::get("validation.attributes.validation_password")}}">
         </div>
     </div>
