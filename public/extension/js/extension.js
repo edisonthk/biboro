@@ -101,8 +101,6 @@ function setupShortcutKey() {
             e.preventDefault();
             $("form").submit();
         }
-
-
     });
 }
 
@@ -116,6 +114,15 @@ function updateMarkdownContent(text) {
         }
         return '<pre class="prettyprint '+langCode+'">'+prettyPrintOne(code)+'</pre>';
     }
+
+    text = text.replace(/```((.|\r?\n)*?)```/g,function(match,p1) {
+        return match.replace(/[<>]/g, function(match) {
+            if(match == "<") {
+                return "&lt;";
+            }
+            return "&gt;";
+        });
+    });
 
     $("#md-content").html(marked(text, {renderer: renderer}));
 }

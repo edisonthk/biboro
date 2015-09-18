@@ -93,7 +93,7 @@ class WorkbookController extends Controller
         if(preg_match($pattern,$id)) {
             // get workbook
             $workbook = $this->workbook->get($id);
-            $snippetQuery = $workbook->snippets();
+            $snippetQuery = $workbook->snippets()->orderBy("workbook_snippet.updated_at","desc");
 
             // get workbook permission
             $workbook->permissions = $this->workbook->getPermission($workbook);
@@ -109,6 +109,8 @@ class WorkbookController extends Controller
                 ];
 
                 $snippetQuery = $this->snippet->getQueryByUrlPath($urlPath);
+                $snippetQuery->orderBy("updated_at","desc");
+
             }catch(UserNotFound $e) {
                 return response()->json("workbook not found",400);
             }

@@ -29,7 +29,8 @@ Route::group(['prefix' => '/api/v1'], function () {
         
         Route::put('snippet/draft/{id?}', 'SnippetController@saveDraft');
 
-        Route::get('workbook/my','WorkbookController@my');
+        Route::resource("news", "NewsController");
+
         Route::put('workbook/{id}/fork','WorkbookController@fork');
         Route::get('workbook/permission/{workbookId}','WorkbookController@showPermission');
         Route::put('workbook/permission/{workbookId}','WorkbookController@grantPermission');

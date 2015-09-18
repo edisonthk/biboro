@@ -64,6 +64,10 @@ class SnippetService {
 		file_put_contents($fileName,$outputkw,FILE_APPEND | LOCK_EX);
 	}
 
+    public function with() {
+        return Snippet::with("tags","creator","reference");
+    }
+
     public function multipleEagerLoadWithTidy(&$snippets) {
 
         $snippetsId = [];
@@ -73,7 +77,7 @@ class SnippetService {
 
         $snippets = [];
 
-        $filteredSnippets = Snippet::with("tags","creator","reference")->whereIn("id",$snippetsId)->get();
+        $filteredSnippets = $this->with()->whereIn("id",$snippetsId)->get();
         foreach ($filteredSnippets as $snippet) {
             $this->beautifySnippetObject($snippet, false);
             $snippets[] = $snippet;
