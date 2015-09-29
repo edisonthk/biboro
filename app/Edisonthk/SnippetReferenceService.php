@@ -36,7 +36,7 @@ class SnippetReferenceService {
         
         $ref->method = self::REFERENCE_BIBORO;
         $ref->target = $refSnippet->id;
-        $ref->author = "";
+        $ref->author = $refSnippet->account_id;
         $ref->save();
         return $ref;
 

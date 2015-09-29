@@ -4,6 +4,7 @@ use Auth;
 use OAuth;
 use Session;
 use Cookie;
+use Config;
 use Validator;
 use App\Model\Account;
 use Illuminate\Http\Request;
@@ -93,12 +94,12 @@ class AccountService {
 
 	public function getLoginedUserInfo() {
         $user = Auth::user();
-        // if(empty($user->url_path)) {
+        if(!is_null($user) && empty($user->url_path)) {
             $urlPath = $this->generateUniqueUrlPath($user->email);
             $user->url_path = $urlPath;
             $user->save();
 
-        // }
+        }
 		return $user;
 	}
 
@@ -127,6 +128,31 @@ class AccountService {
 		return $url;
 	}
 
+    private function copyFileToLocal($fromRemote, $toLocalFolder) {
+        $file = file_get_contents($fromRemote);
+
+        if (!is_dir($toLocalFolder)) {
+            // dir doesn't exist, make it
+            mkdir($toLocalFolder);
+        }
+
+        $filename = basename($fromRemote);
+        $newFilename = $this->generateFilenameWithoutDuplicateInStoreAtFolder($filename, $toLocalFolder);
+
+        file_put_contents($toLocalFolder."/".$newFilename , $file);
+
+        return $newFilename;
+    }
+
+    private function generateFilenameWithoutDuplicateInStoreAtFolder($filename, $storeAtFolder, $offset = 1) {
+        if(file_exists($storeAtFolder ."/". $filename)) {
+            $fileinfo = pathinfo($filename);
+            return $this->generateFilenameWithoutDuplicateInStoreAtFolder($fileinfo["filename"]."-".$offset.".".$fileinfo["extension"], $storeAtFolder, $offset + 1);
+        }
+        
+        return $filename;
+    }
+
 	public function handleOauth2callback(Request $request) {
 
 		$googleService = OAuth::consumer(self::_SERVICE);
@@ -137,6 +163,9 @@ class AccountService {
             
             $result = json_decode( $googleService->request( 'https://www.googleapis.com/oauth2/v1/userinfo' ), true );
 
+            $path = "/uploads/profiles";
+            $picture = $this->copyFileToLocal($result["picture"], public_path().$path);
+            $result["picture"] = Config::get("app.url").$path."/".$picture;
             return $result;
 
         }else if($request->has("error")) {

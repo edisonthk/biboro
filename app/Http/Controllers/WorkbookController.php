@@ -21,6 +21,7 @@ class WorkbookController extends Controller
     private $snippet;
     private $pagination;
     private $account;
+    private $score;
 
     private $updatedMessage;
     private $notFoundJsonMessage;
@@ -31,7 +32,8 @@ class WorkbookController extends Controller
             \App\Edisonthk\AccountService $account,
             \App\Edisonthk\WorkbookService $workbook,
             \App\Edisonthk\SnippetService $snippet,
-            \App\Edisonthk\PaginationService $pagination
+            \App\Edisonthk\PaginationService $pagination,
+            \App\Edisonthk\ScoreService $score
         ) {
 
         $this->middleware('auth', ['only' => ['index','store', 'update','destroy']]);
@@ -40,6 +42,7 @@ class WorkbookController extends Controller
         $this->workbook = $workbook;
         $this->snippet = $snippet;
         $this->pagination = $pagination;
+        $this->score = $score;
 
         $this->notFoundJsonMessage = ["error" => "not found"];
         $this->permissionDeniedJsonMessage = ["error" => "permission denied"];
@@ -92,6 +95,7 @@ class WorkbookController extends Controller
         $pattern = "/^\d+$/";
         if(preg_match($pattern,$id)) {
             // get workbook
+
             $workbook = $this->workbook->get($id);
             $snippetQuery = $workbook->snippets()->orderBy("workbook_snippet.updated_at","desc");
 
@@ -134,40 +138,6 @@ class WorkbookController extends Controller
             "snippets" => $snippets,
             "pagination" => $pagination
         ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function fork($id, Request $request)
-    {
-        $workbook = $this->workbook->get($id);
-        if(is_null($workbook)) {
-            return response()->json( $this->notFoundJsonMessage , 400);
-        }
-
-        $snippetId  = $request->get("snippetId");
-        $action     = $request->get("action");
-        $snippet    = $this->snippet->get($snippetId);
-        if(is_null($snippet)) {
-            return response()->json( $this->notFoundJsonMessage , 400);
-        }
-
-        try {
-            if ($action == self::ACTION_PUSH) {
-                $this->workbook->appendSnippet($workbook, $snippet);
-            } else if ($action == self::ACTION_SLICE) {
-                $this->workbook->sliceSnippet($workbook, $snippet);
-            }
-
-        } catch(SnippetFoundInWorkbook $e) {
-            return response()->json("already updated", 200);
-        }
-        
-        return response()->json("updated", 400);
     }
 
     public function update($id, Request $request)
@@ -241,10 +211,40 @@ class WorkbookController extends Controller
         return response()->json("updated",200);
     }
 
-    public function my()
+    public function search($workbookId, Request $request) 
     {
-        $snippets = $this->snippet->getMyWith(["tags","reference","comments","creator"]);
+        $query = $request->get("q","");
+        if(empty($query)) {
+            return response()->json("Query cannot be empty.", 400);
+        }
 
-        return response()->json($snippets,200);
+        $pattern = "/^\d+$/";
+        if(preg_match($pattern,$workbookId)) {
+        
+            $workbook = $this->workbook->get($workbookId);
+            if(is_null($workbook)) {
+                return response()->json( $this->notFoundJsonMessage , 400);
+            }
+
+            $snippets = $this->workbook->search($workbook ,$query);
+
+        }else {
+            $urlPath = $workbookId;
+            $account = $this->account->getByUrlPath($urlPath);
+            $workbook = [
+                "title" => $account->name,
+                "account" => $account,
+            ];   
+
+            $snippets = $this->snippet->getByUrlPath($urlPath);
+            $snippets = $this->workbook->search($snippets, $query);
+        }
+
+        
+
+        return response()->json([
+            "workbook" => $workbook,
+            "snippets" => $snippets
+        ]);
     }
 }

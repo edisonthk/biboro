@@ -8,10 +8,6 @@ use Illuminate\Routing\Controller as BaseController;
 use App\Model\Tag;
 use App\Model\Snippet;
 use App\Http\Controllers\DraftController;
-use App\Edisonthk\SnippetService;
-use App\Edisonthk\FollowService;
-use App\Edisonthk\CommentService;
-use App\Edisonthk\WorkbookService;
 
 
 class SnippetController extends BaseController {
@@ -20,12 +16,14 @@ class SnippetController extends BaseController {
     private $follow;
     private $comment;
     private $workbook;
+    private $reference;
 
 	public function __construct(
-        SnippetService $snippet, 
-        FollowService $follow, 
-        CommentService $comment,
-        WorkbookService $workbook
+        \App\Edisonthk\SnippetService $snippet, 
+        \App\Edisonthk\FollowService $follow, 
+        \App\Edisonthk\CommentService $comment,
+        \App\Edisonthk\WorkbookService $workbook,
+        \App\Edisonthk\SnippetReferenceService $reference
         ) 
     {
         $this->middleware('auth', ['except' => ['index', 'show', 'search']]);
@@ -34,6 +32,7 @@ class SnippetController extends BaseController {
         $this->follow  = $follow;
         $this->comment = $comment;
         $this->workbook = $workbook;
+        $this->reference = $reference;
 	}
 
 	/**
@@ -136,6 +135,51 @@ class SnippetController extends BaseController {
 			return \Response::json($snippet);
 		}
 	}
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function fork(Request $request)
+    {
+        $inputs = $request->all();
+        $validator = $this->snippet->forkValidate($inputs);
+
+        if ($validator->fails()) {
+            return \Response::json(["error"=>$validator->messages()],400);
+        }
+
+        $workbookId = $request->get("workbookId");
+        $workbook = $this->workbook->get($workbookId);
+        if(is_null($workbook)) {
+            if($workbookId === 0) {
+                return response()->json(["error" => ["workbook" => trans("messages.workbook_not_selected")]] , 400);
+            }else {
+                return response()->json(["error" => ["workbook" => trans("messages.workbook_not_found")]] , 400);
+            }
+            
+        }
+
+        $refSnippetId  = $request->get("refSnippetId");
+        $refSnippet = $this->snippet->get($refSnippetId);
+        if(is_null($refSnippet)) {
+            return response()->json(["error" => ["workbook" => trans("messages.snippet_not_found")]] , 400);
+        }        
+
+        $title      = $request->get("title");
+        $content    = $request->get("content");
+        $tags       = $request->get("tags",[]);
+
+        $snippet = $this->snippet->createAndSave($title, $content, $tags);
+        $this->workbook->appendSnippet($workbook, $snippet);
+        $this->reference->referenceFromBiboro($snippet, $refSnippet);
+
+        $forkedSnippet = $this->snippet->with()->where("id","=",$snippet->id)->first();
+        
+        return response()->json($forkedSnippet, 200);
+    }
 
 
 	/**

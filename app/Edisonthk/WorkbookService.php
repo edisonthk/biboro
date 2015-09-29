@@ -12,11 +12,13 @@ class WorkbookService {
 
     private $account;
     private $snippet;
+    private $score;
 
-    public function __construct(AccountService $account, SnippetService $snippet)
+    public function __construct(AccountService $account, SnippetService $snippet, ScoreService $score)
     {
         $this->account = $account;
         $this->snippet = $snippet;
+        $this->score = $score;
     }
 
     public function getByAccountId($accountId) 
@@ -33,6 +35,33 @@ class WorkbookService {
         }
 
         return Workbook::with("account")->where("id","=",$workbookId)->first();
+    }
+
+    public function search($workbook ,$request_keyword)
+    {
+        $result = [];
+
+        if(is_a($workbook,"App\Model\Workbook")){
+            $snippets = $workbook->snippets()->getResults();
+        }else{
+            $snippets = $workbook;
+        }
+        
+        
+        foreach ($snippets as $snippet) {
+            $score = $this->score->calcScore($snippet, $request_keyword);
+            if($score > 0) {
+                $snippet->score = $score;
+                $result[] = $snippet;
+            }
+        }
+
+        // sort for score
+        usort($result, function($a, $b) {
+            return $a->score < $b->score;
+        });
+
+        return $result;
     }
 
 

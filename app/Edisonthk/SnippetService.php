@@ -120,6 +120,18 @@ class SnippetService {
 	    return "１分前";
 	}
 
+    public function forkValidate($inputs)
+    {
+        $rules = [
+            'title' => 'required',
+            'content' => 'required',
+            'workbookId' => 'required',
+            'refSnippetId' => 'required',
+        ];
+
+        return \Validator::make($inputs, $rules);
+    }
+
 	public function validate($inputs)
 	{
 		\Validator::extend('tag_exists', function($attribute, $value, $parameters)

@@ -1,5 +1,5 @@
 <?php
-
+Route::pattern("snippet",'^(\d+)$');
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -20,6 +20,7 @@ Route::group(['prefix' => '/api/v1'], function () {
     
     Route::post('feedback','FeedbackController@send');
 
+    Route::get("workbook/{workbookId}/search", "WorkbookController@search");
     Route::resource('workbook', 'WorkbookController');
     Route::resource('snippet/{snippetId}/comment', 'CommentController');
     
@@ -27,11 +28,12 @@ Route::group(['prefix' => '/api/v1'], function () {
     Route::group(['middleware' => 'auth'], function() {
         Route::post('images/upload', 'ImageController@upload');
         
+        Route::put('snippet/fork','SnippetController@fork');
         Route::put('snippet/draft/{id?}', 'SnippetController@saveDraft');
 
         Route::resource("news", "NewsController");
 
-        Route::put('workbook/{id}/fork','WorkbookController@fork');
+
         Route::get('workbook/permission/{workbookId}','WorkbookController@showPermission');
         Route::put('workbook/permission/{workbookId}','WorkbookController@grantPermission');
         

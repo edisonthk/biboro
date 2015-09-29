@@ -12,6 +12,9 @@ return [
 	| as the size rules. Feel free to tweak each of these messages here.
 	|
 	*/
+    'snippet_not_found' => 'スニペットが見つかりません',
+    'workbook_not_found' => 'ブックが見つかりません',
+    'workbook_not_selected' => 'ブックが選択されていません',
 
 	'label' => [
 		'email' => 'メールアドレス',

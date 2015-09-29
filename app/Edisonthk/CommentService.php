@@ -63,6 +63,8 @@ class CommentService {
             $comment->editable = $user->id == $comment->account_id;    
         }
         
+        $comment->account = $user;
+
         return $comment;
     }
 

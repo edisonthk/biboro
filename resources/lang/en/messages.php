@@ -12,6 +12,9 @@ return [
 	| as the size rules. Feel free to tweak each of these messages here.
 	|
 	*/
+    'snippet_not_found' => 'Snippet not found',
+    'workbook_not_found' => 'Workbook not found',
+    'workbook_not_selected' => 'Workbook not selected',
 
 	'label' => [
 		'email' => 'Email',

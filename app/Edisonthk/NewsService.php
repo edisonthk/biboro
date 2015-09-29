@@ -20,4 +20,10 @@ class NewsService {
         return $this->snippet->with()->with("workbooks")->orderBy('updated_at', 'desc');
     }
 
+    public function tidy(&$news) {
+        foreach($news as $singleNews) {
+            $this->snippet->beautifySnippetObject($singleNews);
+        }
+    }
+
 }

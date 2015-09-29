@@ -2,6 +2,7 @@
 
 use Response;
 use Config;
+use Auth;
 use App\Model\Account;
 use App\Edisonthk\Exception\OAuthAccessDenied;
 use App\Edisonthk\Exception\UnknownOAuthError;
@@ -20,50 +21,7 @@ class AccountController extends BaseController {
 		$this->accountServices = $accountServices;
 	}
 
-	// public function getSignin()
-	// {	
-	// 	// user already login
-	// 	if($this->accountServices->hasLogined()){
-	// 		return redirect("/account/success");
-	// 	}
-
-	// 	// retrieve authorization uri for login
-	// 	$url = $this->accountServices->getOAuthorizationUri();
-
- //        $user = $this->accountServices->getUserByRememberToken();
 	
-	// 	return view("login_wrapper",[
- //            "action" => "login",
- //            "auth_url" => $url, 
- //            "user" => $user,
- //        ]);
-	// }
-
-	// public function getSuccess() {
-	// 	return view("login_wrapper",[
- //            "action" => "success",
- //            "requested_uri" => $this->accountServices->getRequestedUri(),
- //        ]);
-	// }
-
-	// public function postLogin()
-	// {
-		// $accounts = Account::all();
-
-		// return View::make('/account/login',[$my_account = $accounts]);
-	// }
-
-	// public function getDevSignin()
-	// {
-	// 	$result = $this->accountServices->login(23);
-	// 	if($result["success"]) {
-	// 		return response()->json("success to login", 200);
-	// 	}
-        
- //        return response()->json("fail to login", 403);
-	// }
-
-
 	public function getUserinfo()
 	{
 		// if($this->accountServices->hasLogined()){
@@ -97,10 +55,12 @@ class AccountController extends BaseController {
             $user = $this->accountServices->getAccountByEmail($input["email"]);
             if(!is_null($user)) {
                 // user already login
+
+                Auth::login($user);
                 return redirect(Config::get("app.app_url"));
             }
             
-            $input["profile_image"] = $input["locale"];
+            $input["profile_image"] = $input["picture"];
             $input["google_id"] = $input["id"];
             $account = $this->accountServices->generate($input);
 
