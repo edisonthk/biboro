@@ -17,7 +17,7 @@ return [
 
 	'debug' => env('APP_DEBUG'),
 
-    'app_url' => ( env('APP_DEBUG') ? 'http://localhost:3000' : 'http://biboro.org'),
+    'app_url' => env('APP_DEBUG') ? env('APP_URL', 'http://localhost:3000') : 'http://biboro.org',
 
 	/*
 	|--------------------------------------------------------------------------
