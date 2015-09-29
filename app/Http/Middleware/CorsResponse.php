@@ -14,7 +14,7 @@ class CorsResponse {
 	public function handle($request, Closure $next)
 	{
         $response = $next($request);
-        $response->header('Access-Control-Allow-Origin','http://localhost:3000');
+        $response->header('Access-Control-Allow-Origin','http://localhost:3000, *.biboro.org');
         $response->header('Access-Control-Allow-Credentials', 'true');
         $response->header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE');
         $response->header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
