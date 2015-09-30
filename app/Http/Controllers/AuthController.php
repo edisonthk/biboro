@@ -9,8 +9,6 @@ use Config;
 use Response;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\ThrottlesLogins;
-use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
 class AuthController extends Controller
 {
@@ -19,8 +17,6 @@ class AuthController extends Controller
     const TYPE_USER_CREATED = "created";
     const TYPE_OAUTH_DENIED_ACCESS = "denied";
     const TYPE_UNKNOWN_OAUTH_ERROR = "oauth";
-
-    // use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
     private $account;
 
