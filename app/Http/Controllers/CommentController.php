@@ -9,8 +9,6 @@ use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
 
-use App\Edisonthk\SnippetService;
-use App\Edisonthk\CommentService;
 use App\Edisonthk\Exception\SnippetNotFound;
 
 class CommentController extends Controller
@@ -18,13 +16,19 @@ class CommentController extends Controller
 
     private $snippet;
     private $comment;
+    private $notice;
     
-    public function __construct(SnippetService $snippet, CommentService $comment) 
+    public function __construct(
+        \App\Edisonthk\SnippetService $snippet, 
+        \App\Edisonthk\CommentService $comment, 
+        \App\Edisonthk\NotificationService $notice
+    ) 
     {
         $this->middleware('auth', ['only' => ['store', 'update','destroy']]);
 
         $this->comment = $comment;
         $this->snippet = $snippet;
+        $this->notice = $notice;
     }
 
     public function index($snippetId)
@@ -58,6 +62,10 @@ class CommentController extends Controller
 
         $comment = $request->input("comment");
         $modelComment = $this->comment->createAndSave($snippet, $comment);
+
+
+        $this->notice->noticeComment($snippet->account_id, $modelComment);    
+        
 
         return response()->json($this->comment->makeResponse($modelComment),200);
     }

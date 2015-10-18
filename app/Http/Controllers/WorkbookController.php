@@ -97,6 +97,10 @@ class WorkbookController extends Controller
             // get workbook
 
             $workbook = $this->workbook->get($id);
+            if(is_null($workbook)) {
+                return response()->json("workbook not found",400);
+            }
+            
             $snippetQuery = $workbook->snippets()->orderBy("workbook_snippet.updated_at","desc");
 
             // get workbook permission

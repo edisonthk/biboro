@@ -1,15 +1,15 @@
 <?php namespace App\Http\Controllers;
 
-use Request;
+use Illuminate\Http\Request;
 use Response;
 use Illuminate\Routing\Controller as BaseController;
 
 class ImageController extends BaseController {
 				
-	public function upload(){
+	public function upload(Request $request){
 
-		if(Request::hasFile("files")){
-			$files = Request::file("files");
+		if($request->hasFile("files")){
+			$files = $request->file("files");
 
 			if(is_array($files)){
 				$result = [];

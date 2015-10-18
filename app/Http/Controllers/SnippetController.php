@@ -17,13 +17,15 @@ class SnippetController extends BaseController {
     private $comment;
     private $workbook;
     private $reference;
+    private $notice;
 
 	public function __construct(
         \App\Edisonthk\SnippetService $snippet, 
         \App\Edisonthk\FollowService $follow, 
         \App\Edisonthk\CommentService $comment,
         \App\Edisonthk\WorkbookService $workbook,
-        \App\Edisonthk\SnippetReferenceService $reference
+        \App\Edisonthk\SnippetReferenceService $reference,
+        \App\Edisonthk\NotificationService $notice
         ) 
     {
         $this->middleware('auth', ['except' => ['index', 'show', 'search']]);
@@ -33,6 +35,7 @@ class SnippetController extends BaseController {
         $this->comment = $comment;
         $this->workbook = $workbook;
         $this->reference = $reference;
+        $this->notice = $notice;
 	}
 
 	/**
@@ -176,6 +179,8 @@ class SnippetController extends BaseController {
         $this->workbook->appendSnippet($workbook, $snippet);
         $this->reference->referenceFromBiboro($snippet, $refSnippet);
 
+        $this->notice->noticeForked($refSnippet);
+
         $forkedSnippet = $this->snippet->with()->where("id","=",$snippet->id)->first();
         
         return response()->json($forkedSnippet, 200);
@@ -196,7 +201,7 @@ class SnippetController extends BaseController {
 			return Response::json("", 404);
 		}
 
-        $snippet->load("comments");
+        $snippet->load("comments","workbooks");
 
 		$this->snippet->beautifySnippetObject($snippet);
 		return \Response::json($snippet);

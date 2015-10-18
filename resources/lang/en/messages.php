@@ -16,6 +16,10 @@ return [
     'workbook_not_found' => 'Workbook not found',
     'workbook_not_selected' => 'Workbook not selected',
 
+    'snippet_commented' => "スニペットにコメントされました",
+    'comment_replied' => 'コメントに返信が届きました',
+    'snippet_forked' => 'スニペットがフォークされました',
+
 	'label' => [
 		'email' => 'Email',
 		'password' => 'Password',

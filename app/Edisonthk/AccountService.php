@@ -94,6 +94,8 @@ class AccountService {
 
 	public function getLoginedUserInfo() {
         $user = Auth::user();
+
+        // to adapt to last version
         if(!is_null($user) && empty($user->url_path)) {
             $urlPath = $this->generateUniqueUrlPath($user->email);
             $user->url_path = $urlPath;

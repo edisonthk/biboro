@@ -26,6 +26,10 @@ Route::group(['prefix' => '/api/v1'], function () {
     
 
     Route::group(['middleware' => 'auth'], function() {
+        
+        Route::get('notification','NotificationController@index');
+        Route::post('notification','NotificationController@read');
+
         Route::post('images/upload', 'ImageController@upload');
         
         Route::put('snippet/fork','SnippetController@fork');

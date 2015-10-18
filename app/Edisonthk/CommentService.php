@@ -8,7 +8,9 @@ class CommentService {
 	private $snippet;
     private $account;
     
-    public function __construct(SnippetService $snippet,AccountService $account) 
+    public function __construct(
+        \App\Edisonthk\SnippetService $snippet,
+        \App\Edisonthk\AccountService $account) 
     {
         $this->snippet = $snippet;
         $this->account = $account;
