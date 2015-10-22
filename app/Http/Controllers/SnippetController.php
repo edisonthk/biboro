@@ -115,28 +115,31 @@ class SnippetController extends BaseController {
 
 		if ($validator->fails()) {
 			return \Response::json(["error"=>$validator->messages()],400);
-		} else {
-			// store
-            $title    = $request->get('title');
-            $content  = $request->get('content');
-            $tags     = $request->get("tags", []);
-
-			$snippet = $this->snippet->createAndSave($title, $content, $tags);
-
-            $workbook = $this->workbook->get($request->get("workbookId"));
-            if(!is_null($workbook)) {
-                $this->workbook->appendSnippet($workbook, $snippet);    
-            }
-            
-            
-
-			// destroy draft as real data is stored to database
-			DraftController::destroy();
-
-		
-			$this->snippet->beautifySnippetObject($snippet);
-			return \Response::json($snippet);
 		}
+
+        $workbook = $this->workbook->get($request->get("workbookId"));
+        if (is_null($workbook)) {
+            return response()->json(["error" => ["workbook" =>trans("messages.workbook_not_selected")]],400);
+        }
+
+
+		// store
+        $title    = $request->get('title');
+        $content  = $request->get('content');
+        $tags     = $request->get("tags", []);
+
+		$snippet = $this->snippet->createAndSave($title, $content, $tags);
+
+        $this->workbook->appendSnippet($workbook, $snippet);    
+        
+
+		// destroy draft as real data is stored to database
+		DraftController::destroy();
+
+	
+		$this->snippet->beautifySnippetObject($snippet);
+		return \Response::json($snippet);
+	
 	}
 
     /**
