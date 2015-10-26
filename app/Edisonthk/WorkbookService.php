@@ -65,12 +65,16 @@ class WorkbookService {
     }
 
 
-    public function create($title, $description = "")
-    {
-        $user = $this->account->getLoginedUserInfo();
-        
+    public function create($title, $description = "", $accountId = null)
+    {   
         $workbook = new Workbook;
-        $workbook->account_id = $user->id;
+        if(is_null($accountId)) {
+            $user = $this->account->getLoginedUserInfo();
+            $workbook->account_id = $user->id;
+        }else {
+            $workbook->account_id = $accountId;
+        }
+        
         $workbook->title = $title;
         $workbook->description = $description;
         $workbook->save();
