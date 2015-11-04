@@ -2,6 +2,7 @@
 
 use App\Model\Snippet;
 use App\Model\Workbook;
+use App\Model\WorkbookOrder;
 use App\Model\WorkbookPermission;
 
 
@@ -31,7 +32,14 @@ class WorkbookService {
         $user = $this->account->getLoginedUserInfo();
         
         if(is_null($workbookId)) {
-            return Workbook::with("account")->where("account_id","=",$user->id)->get();    
+            $orderMap = WorkbookOrder::where("account_id","=",$user->id)->lists("order", "workbook_id");
+            $workbooks = Workbook::with("account")->where("account_id","=",$user->id)->get(); 
+            foreach ($workbooks as $wb) {                
+                if(isset($orderMap[$wb->id])) {
+                    $wb->order = $orderMap[$wb->id];
+                }
+            }
+            return $workbooks;
         }
 
         return Workbook::with("account")->where("id","=",$workbookId)->first();
@@ -196,6 +204,30 @@ class WorkbookService {
             $workbookPermission->permission_type     = $permission_type;
             $workbookPermission->target_account_id   = $accountId;
             $workbookPermission->save();
+        }
+    }
+
+    public function updateOrder($orders)
+    {
+        // validate
+        $map = [];
+        foreach ($orders as $workbookId => $order) {
+            if(array_key_exists($order, $map)) {
+                throw new Exception\WorkbookOrderWrongFormat;
+            }else {
+                $map[$order] = true;    
+            }
+        }
+
+        // save
+        $user = $this->account->getLoginedUserInfo();   
+        WorkbookOrder::where("account_id","=",$user->id)->delete();
+        foreach ($orders as $workbookId => $order) {
+            WorkbookOrder::insert([
+                "workbook_id" => $workbookId,
+                "account_id" => $user->id,
+                "order" => $order,
+            ]);
         }
     }
 

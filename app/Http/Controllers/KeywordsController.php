@@ -10,13 +10,16 @@ class KeywordsController extends BaseController {
 
     private $scoreService;
     private $snippetService;
+    private $newsService;
 
     public function __construct(
         \App\Edisonthk\ScoreService $scoreService,
-        \App\Edisonthk\SnippetService $snippetService
+        \App\Edisonthk\SnippetService $snippetService,
+        \App\Edisonthk\NewsService $newsService
     ) {
         $this->scoreService = $scoreService;
         $this->snippetService = $snippetService;
+        $this->newsService = $newsService;
     }
 				
 	public function index() {
@@ -38,20 +41,20 @@ class KeywordsController extends BaseController {
             // }
 
             $result = [];
-            foreach (Snippet::all() as $snippet) {
+            foreach (Snippet::with("workbooks")->get() as $snippet) {
                 $score = $this->scoreService->calcScore($snippet, $request_keyword);
                 if($score > 0) {
-                    $result[] = [
-                        "score"   => $score,
-                        "snippet" => $this->snippetService->beautifySnippetObject($snippet),
-                    ];
+                    $snippet->score = $score;
+                    $result[] = $snippet;
                 }
             }
 
             // sort for score
             usort($result, function($a, $b) {
-                return $a["score"] < $b["score"];
+                return $a->score < $b->score;
             });
+
+            $this->newsService->tidy($result);
 
             return Response::json($result);
         }

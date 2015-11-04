@@ -18,6 +18,4 @@ class Workbook extends Model
     {
         return $this->hasOne('App\Model\Account','id','account_id');
     }
-
-
 }

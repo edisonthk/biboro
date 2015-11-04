@@ -251,4 +251,20 @@ class WorkbookController extends Controller
             "snippets" => $snippets
         ]);
     }
+
+    public function updateOrder(Request $request)
+    {
+        $orders = $request->get("orders");
+        if(!is_array($orders)) {
+            return response()->json("Wrong format", 400);
+        }
+
+        try {
+            $this->workbook->updateOrder($orders);
+        }catch(App\Edisonth\Exception\WorkbookOrderWrongFormat $e) {
+            return response()->json("Wrong format",400);
+        }
+
+        return response()->json("success",200);
+    }
 }

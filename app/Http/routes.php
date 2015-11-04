@@ -20,11 +20,6 @@ Route::group(['prefix' => '/api/v1'], function () {
     
     Route::post('feedback','FeedbackController@send');
 
-    Route::get("workbook/{workbookId}/search", "WorkbookController@search");
-    Route::resource('workbook', 'WorkbookController');
-    Route::resource('snippet/{snippetId}/comment', 'CommentController');
-    
-
     Route::group(['middleware' => 'auth'], function() {
         
         Route::get('notification','NotificationController@index');
@@ -40,10 +35,16 @@ Route::group(['prefix' => '/api/v1'], function () {
 
         Route::get('workbook/permission/{workbookId}','WorkbookController@showPermission');
         Route::put('workbook/permission/{workbookId}','WorkbookController@grantPermission');
+        Route::put('workbook/order','WorkbookController@updateOrder');
         
         Route::post('follow', 'FollowController@follow');
         Route::delete('follow', 'FollowController@unfollow');
     });
+    
+    Route::get("workbook/{workbookId}/search", "WorkbookController@search");
+    Route::resource('workbook', 'WorkbookController');
+    Route::resource('snippet/{snippetId}/comment', 'CommentController');
+    
     
     Route::resource('profile', 'ProfileController');
 
