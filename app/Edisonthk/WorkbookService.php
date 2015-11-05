@@ -162,12 +162,12 @@ class WorkbookService {
         return false;
     }
 
-    public function getPermission(Workbook $workbook, $accountId = null)
+    public function getPermission(Workbook $workbook, $targetAccountId = null)
     {
         $model = WorkbookPermission::where("workbook_id","=",$workbook->id);
 
-        if(!is_null($accountId)) {
-            $model->where("account_id","=",$accountId);
+        if(!is_null($targetAccountId)) {
+            $model->where("target_account_id","=",$targetAccountId);
         }
 
         return $model->get();
