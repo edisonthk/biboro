@@ -19,17 +19,22 @@ class AuthController extends Controller
     const TYPE_UNKNOWN_OAUTH_ERROR = "oauth";
 
     private $account;
+    private $workbook;
 
     /**
      * Create a new authentication controller instance.
      *
      * @return void
      */
-    public function __construct(\App\Edisonthk\AccountService $account)
+    public function __construct(
+        \App\Edisonthk\AccountService $account,
+        \App\Edisonthk\WorkbookService $workbook
+    )
     {
         $this->middleware('guest', ['except' => 'getLogout']);
 
         $this->account = $account;
+        $this->workbook = $workbook;
         
     }
 
@@ -94,6 +99,8 @@ class AuthController extends Controller
         $password = $request->get("password");
 
         $user = $this->account->register($name, $email, $password);
+
+        $this->workbook->create($user->name, "", $user->id);
 
         Auth::attempt(["email" => $email, "password" => $password], true);
 

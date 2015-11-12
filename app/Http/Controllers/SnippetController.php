@@ -126,7 +126,7 @@ class SnippetController extends BaseController {
 		// store
         $title    = $request->get('title');
         $content  = $request->get('content');
-        $tags     = $request->get("tags", []);
+        $tags     = $request->get("tags");
 
 		$snippet = $this->snippet->createAndSave($title, $content, $tags);
 

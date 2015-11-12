@@ -44,6 +44,9 @@ class Snippet extends Model {
 
 	//$id,$name,$tag_id,$snippet_id
 	public function tagsave($tags){
+        if(is_null($tags)) {
+            return;
+        }
 
 		$snippet_id = $this->id;
 		

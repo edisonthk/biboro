@@ -47,7 +47,10 @@ class SnippetService {
         $snippet->account_id    = $user->id;
         $snippet->save();
 
-        $snippet->tagsave($tags);
+        if(!is_null($tags)) {
+            $snippet->tagsave($tags);    
+        }
+        
 
         return $snippet;
     }

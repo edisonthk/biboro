@@ -138,6 +138,7 @@ textarea.form-control {
 }
 
 .md {
+    overflow: auto;
     background-color: #FBFBFB;
 }
 
