@@ -1,5 +1,5 @@
 <?php
-
+Route::pattern("snippet",'^(\d+)$');
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -12,12 +12,67 @@
 */
 
 // Snippet and Tags routing
-Route::controller('/json/tag','TagController');
-Route::put('/json/snippet/draft/{id?}', ['middleware'=>'auth.login','uses'=>'SnippetController@saveDraft']);
-Route::resource('/json/snippet','SnippetController');
-Route::get('/json/search','KeywordsController@index');
-Route::post('/json/images/upload', 'ImageController@upload');
-Route::post('/json/feedback','FeedbackController@send');
+Route::group(['prefix' => '/api/v1'], function () {
+    Route::controller('tag','TagController');
+    
+    Route::resource('snippet','SnippetController');
+    Route::get('search','KeywordsController@index');
+    
+    Route::post('feedback','FeedbackController@send');
+
+    Route::group(['middleware' => 'auth'], function() {
+        
+        Route::get('notification','NotificationController@index');
+        Route::post('notification','NotificationController@read');
+
+        Route::post('images/upload', 'ImageController@upload');
+        
+        Route::put('snippet/fork','SnippetController@fork');
+        Route::put('snippet/draft/{id?}', 'SnippetController@saveDraft');
+
+        Route::resource("news", "NewsController");
+
+
+        Route::get('workbook/permission/{workbookId}','WorkbookController@showPermission');
+        Route::put('workbook/permission/{workbookId}','WorkbookController@grantPermission');
+        Route::put('workbook/order','WorkbookController@updateOrder');
+        
+        Route::post('follow', 'FollowController@follow');
+        Route::delete('follow', 'FollowController@unfollow');
+    });
+    
+    Route::get("workbook/{workbookId}/search", "WorkbookController@search");
+    Route::resource('workbook', 'WorkbookController');
+    Route::resource('snippet/{snippetId}/comment', 'CommentController');
+    
+    
+    Route::resource('profile', 'ProfileController');
+
+    // Account routing
+    // All kinds of user auth is using in this method
+    Route::get('account/userinfo','AccountController@getUserinfo');
+    
+});
+
+Route::get('/account/oauth2callback', 'AccountController@getOauth2callback');
+Route::group(['prefix' => '/auth'], function() {
+    // Authentication routes...
+    Route::get('login', 'AuthController@getLogin');
+    Route::post('login', 'AuthController@postLogin');
+    Route::get('logout', 'AuthController@getLogout');
+
+    // Registration routes...
+    Route::get('register', 'AuthController@getRegister');
+    Route::post('register', 'AuthController@postRegister');
+
+    Route::get('errors', 'AuthController@getErrorAuth');
+});
+
+// extension
+Route::group(['middleware' => 'auth'], function() {
+    Route::resource('copy/snippet', 'ExtensionController');
+});
+
 
 Route::get('/thisistest/json/get', 'HomeController@getPlayground');
 Route::post('/thisistest/json/post', 'HomeController@postPlayground');
@@ -25,33 +80,21 @@ Route::post('/thisistest/json/post', 'HomeController@postPlayground');
 // view search logs
 Route::get('/log/kws', 'LogController@getKeywordLog');
 
-// Account routing
-// All kinds of user auth is using in this method
-Route::controller('/account','AccountController');
 
-Route::get('/_p/', function(){
-	return redirect('/');
-});
+// Route::get('/_p/', function(){
+// 	return redirect('/');
+// });
 
-// old version redirect
-Route::get('/_p/snippet', function() {
-	return redirect('/snippet');
-});
-Route::get('/_p/snippet/{id?}', function($id = '') {
-	return redirect('/snippet/'.$id);
-});
-// old version redirect
-Route::get('/snippets', function() {
-	return redirect('/snippet');
-});
-Route::get('/snippets/{id?}', function($id = '') {
-	return redirect('/snippet/'.$id);
-});
+// // old version redirect
+// Route::get('/_p/snippet', function() { return redirect('/snippet'); });
+// Route::get('/_p/snippet/{id?}', function($id = '') { return redirect('/snippet/'.$id); });
+// Route::get('/snippets', function() { return redirect('/snippet'); });
+// Route::get('/snippets/{id?}', function($id = '') { return redirect('/snippet/'.$id);});
 
-// AngularJS 
-Route::group(['middleware' => ['auth.autologin']], function() {
+// // AngularJS 
+// Route::group(['middleware' => ['auth.autologin']], function() {
 
-    Route::get('/snippet/{a?}/{b?}/{c?}', 'HomeController@index');
-    Route::get('/', 'HomeController@index');
+//     Route::get('/snippet/{a?}/{b?}/{c?}', 'HomeController@index');
+//     Route::get('/', 'HomeController@index');
 
-});
+// });

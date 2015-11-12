@@ -3,7 +3,7 @@
 use App\Http\Controllers\Controller;
 
 
-use App\Draft;
+use App\Model\Draft;
 
 class DraftController extends Controller {
 

@@ -14,10 +14,11 @@ class CreateUsersTable extends Migration {
 	{
 		Schema::table('account_table', function(Blueprint $table)
 		{
-			$table->string('email')->unique()->change();
-			$table->string('password', 60)->nullable();
 			$table->rememberToken();
 		});
+
+        \DB::statement("alter table account_table modify password varchar(60) null");
+
 	}
 
 	/**
@@ -30,7 +31,6 @@ class CreateUsersTable extends Migration {
 		Schema::table('account_table', function(Blueprint $table) 
 		{
 			$table->dropColumn('email');
-			$table->dropColumn('password');
 			$table->dropColumn('remember_token');
 		});
 	}

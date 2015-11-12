@@ -1,6 +1,60 @@
 <?php namespace App\Edisonthk;
 
+use Auth;
+use App\Model\Account;
+use App\Model\Snippet;
+
 class SnippetService {
+
+    private $account;
+
+    public function __construct(AccountService $account) {
+        $this->account = $account;
+    }
+
+    public function get($id = null)
+    {
+        if(is_null($id)) {
+            $user = $this->account->getLoginedUserInfo();
+            return Snippet::where("account_id","=",$user->id)->get();
+        }
+        return Snippet::find($id);
+    }
+
+    public function getByUrlPath($urlPath) {
+        return $this->getQueryByUrlPath($urlPath)->get();
+    }
+
+    public function getQueryByUrlPath($urlPath)
+    {
+        $account = Account::where("url_path","=",$urlPath)->first(["id"]);
+        if(is_null($account)) {
+            throw new Exception\UserNotFound;
+        }
+            
+        return Snippet::with("tags","reference")->where("account_id","=",$account->id);
+    }
+
+    public function createAndSave($title, $content, $tags)
+    {
+        $user = $this->account->getLoginedUserInfo();
+
+        $snippet = new Snippet;
+        $snippet->title         = $title;
+        $snippet->content       = $content;
+        $snippet->timestamps    = true;
+        $snippet->lang          = "jp";
+        $snippet->account_id    = $user->id;
+        $snippet->save();
+
+        if(!is_null($tags)) {
+            $snippet->tagsave($tags);    
+        }
+        
+
+        return $snippet;
+    }
+
 
 	
 	public function recordKeywords($kw) {
@@ -13,14 +67,36 @@ class SnippetService {
 		file_put_contents($fileName,$outputkw,FILE_APPEND | LOCK_EX);
 	}
 
-	public function beautifySnippetObject($snippet){
-		$temp = $snippet->toArray();
-		$temp["updated_at"] = $this->convertToUserViewTimestamp($temp["updated_at"]);
-		$temp["tags"] = $snippet->tags()->getResults()->toArray();
-		$temp["creator_name"] = $snippet->getCreatorName();
-		$temp["editable"] = (\Session::has("user") && \Session::get("user")["id"] == $snippet->account_id);
-		
-		return $temp;
+    public function with() {
+        return Snippet::with("tags","creator","reference");
+    }
+
+    public function multipleEagerLoadWithTidy(&$snippets) {
+
+        $snippetsId = [];
+        foreach ($snippets as $snippet) {
+            $snippetsId[] = $snippet->id;
+        }
+
+        $snippets = [];
+
+        $filteredSnippets = $this->with()->whereIn("id",$snippetsId)->get();
+        foreach ($filteredSnippets as $snippet) {
+            $this->beautifySnippetObject($snippet, false);
+            $snippets[] = $snippet;
+        }
+
+    }
+
+	public function beautifySnippetObject(&$snippet, $load = true){
+
+        if($load) {
+            $snippet->load("tags","creator","reference");    
+        }
+        
+		$snippet->readable_updated_at   = $this->convertToUserViewTimestamp($snippet->updated_at);
+		$snippet->editable              = (Auth::check() && Auth::id() == $snippet->account_id);
+        
 	}
 
 	public function convertToUserViewTimestamp($timestamp){
@@ -47,6 +123,18 @@ class SnippetService {
 	    return "１分前";
 	}
 
+    public function forkValidate($inputs)
+    {
+        $rules = [
+            'title' => 'required',
+            'content' => 'required',
+            'workbookId' => 'required',
+            'refSnippetId' => 'required',
+        ];
+
+        return \Validator::make($inputs, $rules);
+    }
+
 	public function validate($inputs)
 	{
 		\Validator::extend('tag_exists', function($attribute, $value, $parameters)
@@ -69,7 +157,9 @@ class SnippetService {
 		$rules = array(
 			'title'       => 'required',
 			'content'      => 'required',
-			'tags'      => 'required'
+
+            // From v1, tags are not more required input anymore
+			// 'tags'      => 'required'
 		);
 
 		return \Validator::make($inputs, $rules);
