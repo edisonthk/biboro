@@ -18,6 +18,8 @@ class CorsResponse {
         $listAllowed = [
             'http://localhost:3000',
             'http://apptest.biboro.org',
+            'http://www.biboro.org',
+            'http://api.biboro.org',
         ];
         $origin = $request->header('origin');
         if(in_array($origin, $listAllowed)) {
