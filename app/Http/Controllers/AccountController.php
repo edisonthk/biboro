@@ -13,44 +13,33 @@ use Illuminate\Routing\Controller as BaseController;
 class AccountController extends BaseController {
 
 
-	public $accountServices;
+	private $accountServices;
+	private $workbook;
 
 	public function __construct(
-		\App\Edisonthk\AccountService $accountServices
+		\App\Edisonthk\AccountService $accountServices,
+		\App\Edisonthk\WorkbookService $workbook
 	) {
+
 		$this->accountServices = $accountServices;
+		$this->workbook = $workbook;
 	}
 
-	
+
 	public function getUserinfo()
 	{
-		// if($this->accountServices->hasLogined()){
-		// 	$user = $this->accountServices->getLoginedUserInfo();
-		// 	$user["admin"] = $this->accountServices->isAdmin();
-		// 	return Response::json($user, 200);
-		// }else{
+      $user = $this->accountServices->getLoginedUserInfo();
+      if(is_null($user)) {
+          return Response::json(null, 403);
+      }
 
-		// 	$user = $this->accountServices->getUserByRememberToken();
-		// 	if(!is_null($user)) {
-		// 		$user["admin"] = $this->accountServices->isAdmin();
-		// 		return Response::json($user, 200);
-		// 	}
-			
-		// 	return Response::json(null , 403);
-		// }
-
-        $user = $this->accountServices->getLoginedUserInfo();
-        if(is_null($user)) {
-            return Response::json(null, 403);
-        }
-
-        return Response::json($user, 200);
+      return Response::json($user, 200);
 	}
 
 	public function getOauth2callback(Request $request)
 	{
         try {
-            $input = $this->accountServices->handleOauth2callback($request);    
+            $input = $this->accountServices->handleOauth2callback($request);
 
             $user = $this->accountServices->getAccountByEmail($input["email"]);
             if(!is_null($user)) {
@@ -59,10 +48,12 @@ class AccountController extends BaseController {
                 Auth::login($user);
                 return redirect(Config::get("app.app_url"));
             }
-            
+
             $input["profile_image"] = $input["picture"];
             $input["google_id"] = $input["id"];
             $account = $this->accountServices->generate($input);
+
+						$this->workbook->create($account->name, "", $account->id);
 
             return redirect(action("AuthController@getErrorAuth")."?type=".AuthController::TYPE_REGISTER."&email=".$account->email);
 

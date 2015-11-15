@@ -22,7 +22,7 @@ class WorkbookService {
         $this->score = $score;
     }
 
-    public function getByAccountId($accountId) 
+    public function getByAccountId($accountId)
     {
         return Workbook::where("account_id","=",$accountId)->get();
     }
@@ -30,11 +30,19 @@ class WorkbookService {
     public function get($workbookId = null)
     {
         $user = $this->account->getLoginedUserInfo();
-        
+
         if(is_null($workbookId)) {
             $orderMap = WorkbookOrder::where("account_id","=",$user->id)->lists("order", "workbook_id");
-            $workbooks = Workbook::with("account")->where("account_id","=",$user->id)->get(); 
-            foreach ($workbooks as $wb) {                
+            $workbooks = Workbook::with("account")->where("account_id","=",$user->id)->get();
+            foreach ($workbooks as $wb) {
+
+
+                if($this->editable($wb)) {
+                    $wb->editable = true;
+                }else {
+                    $wb->editable = false;
+                }
+
                 if(isset($orderMap[$wb->id])) {
                     $wb->order = $orderMap[$wb->id];
                 }
@@ -54,8 +62,8 @@ class WorkbookService {
         }else{
             $snippets = $workbook;
         }
-        
-        
+
+
         foreach ($snippets as $snippet) {
             $score = $this->score->calcScore($snippet, $request_keyword);
             if($score > 0) {
@@ -74,7 +82,7 @@ class WorkbookService {
 
 
     public function create($title, $description = "", $accountId = null)
-    {   
+    {
         $workbook = new Workbook;
         if(is_null($accountId)) {
             $user = $this->account->getLoginedUserInfo();
@@ -82,7 +90,7 @@ class WorkbookService {
         }else {
             $workbook->account_id = $accountId;
         }
-        
+
         $workbook->title = $title;
         $workbook->description = $description;
         $workbook->save();
@@ -190,7 +198,7 @@ class WorkbookService {
 
     public function grantPermission(Workbook $workbook, $permits, $accountId)
     {
-        $user = $this->account->getLoginedUserInfo();   
+        $user = $this->account->getLoginedUserInfo();
         if(!$this->havePermission($workbook, self::PERMIT_MANAGE_USER, $user->id)) {
             throw new Exception\PermissionDenied;
         }
@@ -215,12 +223,12 @@ class WorkbookService {
             if(array_key_exists($order, $map)) {
                 throw new Exception\WorkbookOrderWrongFormat;
             }else {
-                $map[$order] = true;    
+                $map[$order] = true;
             }
         }
 
         // save
-        $user = $this->account->getLoginedUserInfo();   
+        $user = $this->account->getLoginedUserInfo();
         WorkbookOrder::where("account_id","=",$user->id)->delete();
         foreach ($orders as $workbookId => $order) {
             WorkbookOrder::insert([
