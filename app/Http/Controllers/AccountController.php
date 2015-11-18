@@ -44,8 +44,7 @@ class AccountController extends BaseController {
             $user = $this->accountServices->getAccountByEmail($input["email"]);
             if(!is_null($user)) {
                 // user already login
-
-                Auth::login($user);
+                Auth::login($user, true);
                 return redirect(Config::get("app.app_url"));
             }
 
