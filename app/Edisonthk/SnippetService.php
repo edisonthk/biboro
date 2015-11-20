@@ -1,8 +1,8 @@
-<?php namespace App\Edisonthk;
+<?php namespace Biboro\Edisonthk;
 
 use Auth;
-use App\Model\Account;
-use App\Model\Snippet;
+use Biboro\Model\Account;
+use Biboro\Model\Snippet;
 
 class SnippetService {
 

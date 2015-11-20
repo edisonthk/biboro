@@ -1,11 +1,11 @@
-<?php namespace App\Http\Controllers;
+<?php namespace Biboro\Http\Controllers;
 
 use Response;
 use Config;
 use Auth;
-use App\Model\Account;
-use App\Edisonthk\Exception\OAuthAccessDenied;
-use App\Edisonthk\Exception\UnknownOAuthError;
+use Biboro\Model\Account;
+use Biboro\Edisonthk\Exception\OAuthAccessDenied;
+use Biboro\Edisonthk\Exception\UnknownOAuthError;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 
@@ -17,8 +17,8 @@ class AccountController extends BaseController {
 	private $workbook;
 
 	public function __construct(
-		\App\Edisonthk\AccountService $accountServices,
-		\App\Edisonthk\WorkbookService $workbook
+		\Biboro\Edisonthk\AccountService $accountServices,
+		\Biboro\Edisonthk\WorkbookService $workbook
 	) {
 
 		$this->accountServices = $accountServices;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model;
+namespace Biboro\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,11 +11,11 @@ class Workbook extends Model
     //
     public function snippets()
     {
-        return $this->belongsToMany('App\Model\Snippet','workbook_snippet');
+        return $this->belongsToMany('Biboro\Model\Snippet','workbook_snippet');
     }
 
     public function account()
     {
-        return $this->hasOne('App\Model\Account','id','account_id');
+        return $this->hasOne('Biboro\Model\Account','id','account_id');
     }
 }

@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Biboro\Http\Controllers;
 
-use App\Model\Comment;
-use App\Model\Snippet;
+use Biboro\Model\Comment;
+use Biboro\Model\Snippet;
 
 use Illuminate\Http\Request;
 
-use App\Http\Controllers\Controller;
+use Biboro\Http\Controllers\Controller;
 
-use App\Edisonthk\Exception\SnippetNotFound;
+use Biboro\Edisonthk\Exception\SnippetNotFound;
 
 class CommentController extends Controller
 {
@@ -19,9 +19,9 @@ class CommentController extends Controller
     private $notice;
     
     public function __construct(
-        \App\Edisonthk\SnippetService $snippet, 
-        \App\Edisonthk\CommentService $comment, 
-        \App\Edisonthk\NotificationService $notice
+        \Biboro\Edisonthk\SnippetService $snippet, 
+        \Biboro\Edisonthk\CommentService $comment, 
+        \Biboro\Edisonthk\NotificationService $notice
     ) 
     {
         $this->middleware('auth', ['only' => ['store', 'update','destroy']]);

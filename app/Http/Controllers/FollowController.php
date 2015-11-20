@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Biboro\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-use App\Edisonthk\Exception;
+use Biboro\Http\Requests;
+use Biboro\Http\Controllers\Controller;
+use Biboro\Edisonthk\Exception;
 
 class FollowController extends Controller
 {
     private $follow;
 
-    public function __construct( \App\Edisonthk\FollowService $follow ) {
+    public function __construct( \Biboro\Edisonthk\FollowService $follow ) {
 
         $this->follow = $follow;
 

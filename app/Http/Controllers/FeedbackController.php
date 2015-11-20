@@ -1,4 +1,4 @@
-<?php namespace App\Http\Controllers;
+<?php namespace Biboro\Http\Controllers;
 
 use Illuminate\Routing\Controller as BaseController;
 
@@ -7,7 +7,7 @@ class FeedbackController extends BaseController {
 	private $account;
 
 	public function __construct(
-		\App\Edisonthk\AccountService $account
+		\Biboro\Edisonthk\AccountService $account
 	) {
 		$this->account = $account;
 	}

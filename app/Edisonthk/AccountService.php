@@ -1,4 +1,4 @@
-<?php namespace App\Edisonthk;
+<?php namespace Biboro\Edisonthk;
 
 use Auth;
 use OAuth;
@@ -6,7 +6,7 @@ use Session;
 use Cookie;
 use Config;
 use Validator;
-use App\Model\Account;
+use Biboro\Model\Account;
 use Illuminate\Http\Request;
 
 class AccountService {

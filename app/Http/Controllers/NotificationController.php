@@ -1,4 +1,4 @@
-<?php namespace App\Http\Controllers;
+<?php namespace Biboro\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
@@ -7,7 +7,7 @@ class NotificationController extends BaseController {
 
     public $notification;
 
-    public function __construct(\App\Edisonthk\NotificationService $notification) {
+    public function __construct(\Biboro\Edisonthk\NotificationService $notification) {
         $this->notification = $notification;
     }
 				

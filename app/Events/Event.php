@@ -1,4 +1,4 @@
-<?php namespace App\Events;
+<?php namespace Biboro\Events;
 
 abstract class Event {
 

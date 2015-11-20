@@ -12,7 +12,7 @@ use Faker\Provider\Base;
 | database. Just tell the factory how a default model should look.
 |
 */
-$factory->define(App\Model\Account::class, function ($faker) {
+$factory->define(Biboro\Model\Account::class, function ($faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->email,
@@ -21,7 +21,7 @@ $factory->define(App\Model\Account::class, function ($faker) {
     ];
 });
 
-$factory->define(App\Model\Snippet::class, function ($faker) {
+$factory->define(Biboro\Model\Snippet::class, function ($faker) {
     return [
         'title' => $faker->sentence,
         'content' => $faker->sentence,
@@ -30,8 +30,8 @@ $factory->define(App\Model\Snippet::class, function ($faker) {
     ];
 });
 
-$factory->define(App\Model\Tag::class, function ($faker) {
+$factory->define(Biboro\Model\Tag::class, function ($faker) {
     return [
-        'name' => Base::randomElements(["server","AngularJS-watch","range-base_for","JavaScript-canvas","Chrome-App","シリアル通信","React.js","タイマー","端末","Terminal","画像処理","AngularJS-http","express.js","node.js","AngularJS-resources","Android-ListView","Terminal","CSRF","XSRF","JSON"]),
+        'name' => Base::randomElements(["server","AngularJS-watch","range-base_for","JavaScript-canvas","Chrome-Biboro","シリアル通信","React.js","タイマー","端末","Terminal","画像処理","AngularJS-http","express.js","node.js","AngularJS-resources","Android-ListView","Terminal","CSRF","XSRF","JSON"]),
     ];
 });

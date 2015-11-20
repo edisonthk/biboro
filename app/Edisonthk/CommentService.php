@@ -1,7 +1,7 @@
-<?php namespace App\Edisonthk;
+<?php namespace Biboro\Edisonthk;
 
 use Auth;
-use App\Model\Comment;
+use Biboro\Model\Comment;
 
 class CommentService {
 
@@ -9,8 +9,8 @@ class CommentService {
     private $account;
     
     public function __construct(
-        \App\Edisonthk\SnippetService $snippet,
-        \App\Edisonthk\AccountService $account) 
+        \Biboro\Edisonthk\SnippetService $snippet,
+        \Biboro\Edisonthk\AccountService $account) 
     {
         $this->snippet = $snippet;
         $this->account = $account;

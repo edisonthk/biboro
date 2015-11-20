@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model;
+namespace Biboro\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,11 +18,11 @@ class Notification extends Model
 
     public function byUser()
     {
-        return $this->hasOne('App\Model\Account','id','by_user_id');
+        return $this->hasOne('Biboro\Model\Account','id','by_user_id');
     }
 
     public function toUser()
     {
-        return $this->hasOne('App\Model\Account','id','to_user_id');
+        return $this->hasOne('Biboro\Model\Account','id','to_user_id');
     }
 }

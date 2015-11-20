@@ -1,6 +1,6 @@
-<?php namespace App\Edisonthk;
+<?php namespace Biboro\Edisonthk;
 
-use App\Model\Snippet;
+use Biboro\Model\Snippet;
 
 class NewsService {
 

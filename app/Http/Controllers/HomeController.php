@@ -1,10 +1,10 @@
-<?php namespace App\Http\Controllers;
+<?php namespace Biboro\Http\Controllers;
 
 use Request;
 use Response;
 use Config;
-use App\Http\Controllers\Controller;
-use App\Model\Snippet;
+use Biboro\Http\Controllers\Controller;
+use Biboro\Model\Snippet;
 use Mobile_Detect;
 
 class HomeController extends Controller {

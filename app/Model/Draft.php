@@ -1,4 +1,4 @@
-<?php namespace App\Model;
+<?php namespace Biboro\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,7 +14,7 @@ class Draft extends Model {
 	public $timestamps = true;
 
 	public function tags(){
-		return $this->belongsToMany('App\Model\Tag','draft_tag','draft_id','tag_id');
+		return $this->belongsToMany('Biboro\Model\Tag','draft_tag','draft_id','tag_id');
 	}
 
 	public function getCreatorName(){

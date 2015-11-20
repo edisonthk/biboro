@@ -1,13 +1,13 @@
-<?php namespace App\Http\Controllers;
+<?php namespace Biboro\Http\Controllers;
 
 
 use \Response;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 
-use App\Model\Tag;
-use App\Model\Snippet;
-use App\Http\Controllers\DraftController;
+use Biboro\Model\Tag;
+use Biboro\Model\Snippet;
+use Biboro\Http\Controllers\DraftController;
 
 
 class SnippetController extends BaseController {
@@ -20,12 +20,12 @@ class SnippetController extends BaseController {
     private $notice;
 
 	public function __construct(
-        \App\Edisonthk\SnippetService $snippet, 
-        \App\Edisonthk\FollowService $follow, 
-        \App\Edisonthk\CommentService $comment,
-        \App\Edisonthk\WorkbookService $workbook,
-        \App\Edisonthk\SnippetReferenceService $reference,
-        \App\Edisonthk\NotificationService $notice
+        \Biboro\Edisonthk\SnippetService $snippet, 
+        \Biboro\Edisonthk\FollowService $follow, 
+        \Biboro\Edisonthk\CommentService $comment,
+        \Biboro\Edisonthk\WorkbookService $workbook,
+        \Biboro\Edisonthk\SnippetReferenceService $reference,
+        \Biboro\Edisonthk\NotificationService $notice
         ) 
     {
         $this->middleware('auth', ['except' => ['index', 'show', 'search']]);

@@ -1,4 +1,4 @@
-<?php namespace App\Model;
+<?php namespace Biboro\Model;
 
 use Illuminate\Database\Eloquent\Model;
 

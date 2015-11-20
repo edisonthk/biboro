@@ -1,10 +1,10 @@
-<?php namespace App\Edisonthk;
+<?php namespace Biboro\Edisonthk;
 
 use Illuminate\Http\Request;
 
-use App\Model\Notification;
-use App\Model\Snippet;
-use App\Model\Comment;
+use Biboro\Model\Notification;
+use Biboro\Model\Snippet;
+use Biboro\Model\Comment;
 
 class NotificationService {
     

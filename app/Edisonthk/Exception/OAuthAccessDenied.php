@@ -1,4 +1,4 @@
-<?php namespace App\Edisonthk\Exception;
+<?php namespace Biboro\Edisonthk\Exception;
 
 use Exception;
 

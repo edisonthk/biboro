@@ -1,4 +1,4 @@
-<?php namespace App\Http\Controllers;
+<?php namespace Biboro\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Response;

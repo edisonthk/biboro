@@ -1,15 +1,15 @@
-<?php namespace App\Http\Middleware;
+<?php namespace Biboro\Http\Middleware;
 
 use Closure;
 use Session;
-use App\Edisonthk\AccountService;
+use Biboro\Edisonthk\AccountService;
 
 class AutoLogin {
 
     public $accountServices;
 
     public function __construct(
-            \App\Edisonthk\AccountService $accountServices
+            \Biboro\Edisonthk\AccountService $accountServices
         )
     {
         $this->accountServices = $accountServices;

@@ -1,7 +1,7 @@
-<?php namespace App\Edisonthk;
+<?php namespace Biboro\Edisonthk;
 
-use App\Model\Snippet;
-use App\Model\SnippetReference;
+use Biboro\Model\Snippet;
+use Biboro\Model\SnippetReference;
 
 class SnippetReferenceService {
 

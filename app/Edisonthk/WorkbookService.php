@@ -1,9 +1,9 @@
-<?php namespace App\Edisonthk;
+<?php namespace Biboro\Edisonthk;
 
-use App\Model\Snippet;
-use App\Model\Workbook;
-use App\Model\WorkbookOrder;
-use App\Model\WorkbookPermission;
+use Biboro\Model\Snippet;
+use Biboro\Model\Workbook;
+use Biboro\Model\WorkbookOrder;
+use Biboro\Model\WorkbookPermission;
 
 
 class WorkbookService {
@@ -57,7 +57,7 @@ class WorkbookService {
     {
         $result = [];
 
-        if(is_a($workbook,"App\Model\Workbook")){
+        if(is_a($workbook,"Biboro\Model\Workbook")){
             $snippets = $workbook->snippets()->getResults();
         }else{
             $snippets = $workbook;

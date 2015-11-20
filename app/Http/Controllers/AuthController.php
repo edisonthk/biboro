@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Biboro\Http\Controllers;
 
 use Illuminate\Http\Request;
 
 use Auth;
 use Config;
 use Response;
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
+use Biboro\Http\Requests;
+use Biboro\Http\Controllers\Controller;
 
 class AuthController extends Controller
 {
@@ -27,8 +27,8 @@ class AuthController extends Controller
      * @return void
      */
     public function __construct(
-        \App\Edisonthk\AccountService $account,
-        \App\Edisonthk\WorkbookService $workbook
+        \Biboro\Edisonthk\AccountService $account,
+        \Biboro\Edisonthk\WorkbookService $workbook
     )
     {
         $this->middleware('guest', ['except' => 'getLogout']);

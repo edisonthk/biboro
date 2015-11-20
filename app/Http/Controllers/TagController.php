@@ -1,6 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php namespace Biboro\Http\Controllers;
 
-use App\Model\Tag;
+use Biboro\Model\Tag;
 use Illuminate\Routing\Controller as BaseController;
 
 class TagController extends BaseController {

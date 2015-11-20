@@ -143,9 +143,9 @@ return [
 		/*
 		 * Application Service Providers...
 		 */
-		'App\Providers\AppServiceProvider',
-		'App\Providers\BusServiceProvider',
-		'App\Providers\RouteServiceProvider',
+		'Biboro\Providers\AppServiceProvider',
+		'Biboro\Providers\BusServiceProvider',
+		'Biboro\Providers\RouteServiceProvider',
 
 
 		/* 

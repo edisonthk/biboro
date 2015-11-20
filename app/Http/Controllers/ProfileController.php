@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Biboro\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
+use Biboro\Http\Requests;
+use Biboro\Http\Controllers\Controller;
 
-use App\Edisonthk\Exception\MissingLoginedUserInfo;
-use App\Edisonthk\Exception\NotAllowedToEdit;
-use App\Edisonthk\Exception\SnippetFoundInWorkbook;
+use Biboro\Edisonthk\Exception\MissingLoginedUserInfo;
+use Biboro\Edisonthk\Exception\NotAllowedToEdit;
+use Biboro\Edisonthk\Exception\SnippetFoundInWorkbook;
 
 class ProfileController extends Controller
 {
     private $profile;
 
-    public function __construct(\App\Edisonthk\ProfileService $profile ) {
+    public function __construct(\Biboro\Edisonthk\ProfileService $profile ) {
         $this->profile = $profile;
     }
 

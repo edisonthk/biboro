@@ -1,4 +1,4 @@
-<?php namespace App\Http\Middleware;
+<?php namespace Biboro\Http\Middleware;
 
 use Closure;
 use Cookie;

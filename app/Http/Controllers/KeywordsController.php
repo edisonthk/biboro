@@ -1,7 +1,7 @@
-<?php namespace App\Http\Controllers;
+<?php namespace Biboro\Http\Controllers;
 
-use \App\Model\Keyword;
-use \App\Model\Snippet;
+use \Biboro\Model\Keyword;
+use \Biboro\Model\Snippet;
 use \Request;
 use \Response;
 use Illuminate\Routing\Controller as BaseController;
@@ -13,9 +13,9 @@ class KeywordsController extends BaseController {
     private $newsService;
 
     public function __construct(
-        \App\Edisonthk\ScoreService $scoreService,
-        \App\Edisonthk\SnippetService $snippetService,
-        \App\Edisonthk\NewsService $newsService
+        \Biboro\Edisonthk\ScoreService $scoreService,
+        \Biboro\Edisonthk\SnippetService $snippetService,
+        \Biboro\Edisonthk\NewsService $newsService
     ) {
         $this->scoreService = $scoreService;
         $this->snippetService = $snippetService;

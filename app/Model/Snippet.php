@@ -1,7 +1,7 @@
-<?php namespace App\Model;
+<?php namespace Biboro\Model;
 
-use App\Model\Tag;
-use App\Model\Snippet;
+use Biboro\Model\Tag;
+use Biboro\Model\Snippet;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -20,26 +20,26 @@ class Snippet extends Model {
 	public $timestamps = true;
 
 	public function tags(){
-		return $this->belongsToMany('App\Model\Tag','snippet_tag','snippet_id','tag_id');
+		return $this->belongsToMany('Biboro\Model\Tag','snippet_tag','snippet_id','tag_id');
 	}
 
     public function reference() {
-        return $this->hasOne('App\Model\SnippetReference');
+        return $this->hasOne('Biboro\Model\SnippetReference');
     }
 
     public function workbooks()
     {
-        return $this->belongsToMany('App\Model\Workbook','workbook_snippet');
+        return $this->belongsToMany('Biboro\Model\Workbook','workbook_snippet');
     }
 
     public function comments()
     {
-        return $this->hasMany("App\Model\Comment");
+        return $this->hasMany("Biboro\Model\Comment");
     }
 
 	public function creator()
     {
-        return $this->hasOne('App\Model\Account','id','account_id');
+        return $this->hasOne('Biboro\Model\Account','id','account_id');
     }
 
 	//$id,$name,$tag_id,$snippet_id

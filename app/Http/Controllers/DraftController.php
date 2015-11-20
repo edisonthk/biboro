@@ -1,9 +1,9 @@
-<?php namespace App\Http\Controllers;
+<?php namespace Biboro\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Biboro\Http\Controllers\Controller;
 
 
-use App\Model\Draft;
+use Biboro\Model\Draft;
 
 class DraftController extends Controller {
 

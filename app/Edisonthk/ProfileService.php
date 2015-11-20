@@ -1,12 +1,12 @@
-<?php namespace App\Edisonthk;
+<?php namespace Biboro\Edisonthk;
 
-use App\Model\Profile;
+use Biboro\Model\Profile;
 
 class ProfileService {
 
     private $account;
 
-    public function __construct(\App\Edisonthk\AccountService $account)
+    public function __construct(\Biboro\Edisonthk\AccountService $account)
     {
         $this->account = $account;
     }

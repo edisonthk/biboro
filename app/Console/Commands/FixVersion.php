@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Console\Commands;
+namespace Biboro\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Model\Account;
+use Biboro\Model\Account;
 
 class FixVersion extends Command
 {
@@ -26,7 +26,7 @@ class FixVersion extends Command
      *
      * @return void
      */
-    public function __construct(\App\Edisonthk\WorkbookService $workbook)
+    public function __construct(\Biboro\Edisonthk\WorkbookService $workbook)
     {
         parent::__construct();
 

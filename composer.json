@@ -28,7 +28,7 @@
 			"database"
 		],
 		"psr-4": {
-			"App\\": "app/"
+			"Biboro\\": "app/"
 		}
 	},
 	"autoload-dev": {

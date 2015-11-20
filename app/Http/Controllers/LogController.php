@@ -1,4 +1,4 @@
-<?php namespace App\Http\Controllers;
+<?php namespace Biboro\Http\Controllers;
 
 use Session;
 use Illuminate\Routing\Controller as BaseController;
@@ -6,8 +6,8 @@ use Illuminate\Routing\Controller as BaseController;
 class LogController extends BaseController {
 
 	public function __construct(
-		\App\Edisonthk\AccountService $account_services,
-		\App\Edisonthk\CSVService $csv_service
+		\Biboro\Edisonthk\AccountService $account_services,
+		\Biboro\Edisonthk\CSVService $csv_service
 	) {
 		$this->account_services = $account_services;
 		$this->csv_service = $csv_service;

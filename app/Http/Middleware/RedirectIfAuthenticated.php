@@ -1,4 +1,4 @@
-<?php namespace App\Http\Middleware;
+<?php namespace Biboro\Http\Middleware;
 
 use Config;
 use Closure;
@@ -22,7 +22,7 @@ class RedirectIfAuthenticated {
 	 * @param  Guard  $auth
 	 * @return void
 	 */
-	public function __construct(Guard $auth, \App\Edisonthk\AccountService $account)
+	public function __construct(Guard $auth, \Biboro\Edisonthk\AccountService $account)
 	{
 		$this->auth = $auth;
         $this->account = $account;

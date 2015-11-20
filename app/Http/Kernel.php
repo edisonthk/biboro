@@ -1,4 +1,4 @@
-<?php namespace App\Http;
+<?php namespace Biboro\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -14,8 +14,8 @@ class Kernel extends HttpKernel {
 		'Illuminate\Cookie\Middleware\EncryptCookies',
 		'Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse',
 		'Illuminate\Session\Middleware\StartSession',
-        'App\Http\Middleware\CorsResponse'
-		// 'App\Http\Middleware\VerifyCsrfToken',
+        'Biboro\Http\Middleware\CorsResponse'
+		// 'Biboro\Http\Middleware\VerifyCsrfToken',
 	];
 
 	/**
@@ -26,11 +26,11 @@ class Kernel extends HttpKernel {
 	protected $routeMiddleware = [
 		
 		'auth.basic'     => 'Illuminate\Auth\Middleware\AuthenticateWithBasicAuth',
-		'guest'          => 'App\Http\Middleware\RedirectIfAuthenticated',
+		'guest'          => 'Biboro\Http\Middleware\RedirectIfAuthenticated',
 
 		// require login
-		'auth'     => 'App\Http\Middleware\Authenticate',
-        'auth.autologin' => 'App\Http\Middleware\AutoLogin',
+		'auth'     => 'Biboro\Http\Middleware\Authenticate',
+        'auth.autologin' => 'Biboro\Http\Middleware\AutoLogin',
 	];
 
 }

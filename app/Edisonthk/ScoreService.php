@@ -1,4 +1,4 @@
-<?php namespace App\Edisonthk;
+<?php namespace Biboro\Edisonthk;
 
 use DateTime;
 

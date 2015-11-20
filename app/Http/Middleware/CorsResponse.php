@@ -1,4 +1,4 @@
-<?php namespace App\Http\Middleware;
+<?php namespace Biboro\Http\Middleware;
 
 use Closure;
 
@@ -15,12 +15,16 @@ class CorsResponse {
 	{
         $response = $next($request);
 
-        $listAllowed = [
-            'http://localhost:3000',
-            'http://apptest.biboro.org',
+				$listAllowed = [
             'http://www.biboro.org',
             'http://api.biboro.org',
         ];
+
+				if(env("APP_ENV") !== 'production') {
+						$listAllowed[] = 'http://stagging-api.biboro.org';
+						$listAllowed[] = 'http://localhost:3000';
+				}
+
         $origin = $request->header('origin');
         if(in_array($origin, $listAllowed)) {
             $response->header('Access-Control-Allow-Origin',$origin);

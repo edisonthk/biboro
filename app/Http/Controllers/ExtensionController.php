@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Biboro\Http\Controllers;
 
 use Response;
 use Illuminate\Http\Request;
 
-use App\Http\Controllers\Controller;
+use Biboro\Http\Controllers\Controller;
 
-use App\Edisonthk\SnippetService;
-use App\Edisonthk\AccountService;
-use App\Edisonthk\WorkbookService;
-use App\Edisonthk\SnippetReferenceService;
+use Biboro\Edisonthk\SnippetService;
+use Biboro\Edisonthk\AccountService;
+use Biboro\Edisonthk\WorkbookService;
+use Biboro\Edisonthk\SnippetReferenceService;
 
 class ExtensionController extends Controller
 {

@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Biboro\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
+use Biboro\Http\Requests;
+use Biboro\Http\Controllers\Controller;
 
-use App\Edisonthk\Exception\MissingLoginedUserInfo;
-use App\Edisonthk\Exception\NotAllowedToEdit;
-use App\Edisonthk\Exception\SnippetFoundInWorkbook;
+use Biboro\Edisonthk\Exception\MissingLoginedUserInfo;
+use Biboro\Edisonthk\Exception\NotAllowedToEdit;
+use Biboro\Edisonthk\Exception\SnippetFoundInWorkbook;
 
 class NewsController extends Controller
 {
@@ -18,9 +18,9 @@ class NewsController extends Controller
     private $pagination;
 
     public function __construct(
-        \App\Edisonthk\NewsService $news,
-        \App\Edisonthk\SnippetService $snippet,
-        \App\Edisonthk\PaginationService $pagination 
+        \Biboro\Edisonthk\NewsService $news,
+        \Biboro\Edisonthk\SnippetService $snippet,
+        \Biboro\Edisonthk\PaginationService $pagination 
     ) {
         $this->pagination = $pagination;
         $this->snippet = $snippet;

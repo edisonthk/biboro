@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Biboro\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
+use Biboro\Http\Requests;
+use Biboro\Http\Controllers\Controller;
 
-use App\Edisonthk\Exception\MissingLoginedUserInfo;
-use App\Edisonthk\Exception\NotAllowedToEdit;
-use App\Edisonthk\Exception\SnippetFoundInWorkbook;
-use App\Edisonthk\Exception\UserNotFound;
+use Biboro\Edisonthk\Exception\MissingLoginedUserInfo;
+use Biboro\Edisonthk\Exception\NotAllowedToEdit;
+use Biboro\Edisonthk\Exception\SnippetFoundInWorkbook;
+use Biboro\Edisonthk\Exception\UserNotFound;
 
 class WorkbookController extends Controller
 {
@@ -29,11 +29,11 @@ class WorkbookController extends Controller
     private $noPermission;
 
     public function __construct(
-            \App\Edisonthk\AccountService $account,
-            \App\Edisonthk\WorkbookService $workbook,
-            \App\Edisonthk\SnippetService $snippet,
-            \App\Edisonthk\PaginationService $pagination,
-            \App\Edisonthk\ScoreService $score
+            \Biboro\Edisonthk\AccountService $account,
+            \Biboro\Edisonthk\WorkbookService $workbook,
+            \Biboro\Edisonthk\SnippetService $snippet,
+            \Biboro\Edisonthk\PaginationService $pagination,
+            \Biboro\Edisonthk\ScoreService $score
         ) {
 
         $this->middleware('auth', ['only' => ['index','store', 'update','destroy']]);
@@ -261,7 +261,7 @@ class WorkbookController extends Controller
 
         try {
             $this->workbook->updateOrder($orders);
-        }catch(App\Edisonth\Exception\WorkbookOrderWrongFormat $e) {
+        }catch(Biboro\Edisonth\Exception\WorkbookOrderWrongFormat $e) {
             return response()->json("Wrong format",400);
         }
 
