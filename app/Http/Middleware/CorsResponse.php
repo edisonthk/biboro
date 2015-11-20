@@ -21,6 +21,7 @@ class CorsResponse {
         ];
 
 				if(env("APP_ENV") !== 'production') {
+
 						$listAllowed[] = 'http://stagging-api.biboro.org';
 						$listAllowed[] = 'http://localhost:3000';
 				}
@@ -28,13 +29,13 @@ class CorsResponse {
         $origin = $request->header('origin');
         if(in_array($origin, $listAllowed)) {
             $response->header('Access-Control-Allow-Origin',$origin);
+						$response->header('Access-Control-Allow-Credentials', 'true');
+		        $response->header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE');
+		        $response->header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
         }
 
-        $response->header('Access-Control-Allow-Credentials', 'true');
-        $response->header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE');
-        $response->header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
         $response->header('XSRF-TOKEN', csrf_token());
-		return $response;
+				return $response;
 	}
 
 }
