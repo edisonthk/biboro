@@ -149,7 +149,9 @@ class AccountService {
     private function generateFilenameWithoutDuplicateInStoreAtFolder($filename, $storeAtFolder, $offset = 1) {
         if(file_exists($storeAtFolder ."/". $filename)) {
             $fileinfo = pathinfo($filename);
-            return $this->generateFilenameWithoutDuplicateInStoreAtFolder($fileinfo["filename"]."-".$offset.".".$fileinfo["extension"], $storeAtFolder, $offset + 1);
+            $newFilename = preg_replace('/-(\d+)$/i', '', $fileinfo["filename"]);
+            $newFilename .= "-".$offset.".".$fileinfo["extension"];
+            return $this->generateFilenameWithoutDuplicateInStoreAtFolder($newFilename, $storeAtFolder, $offset + 1);
         }
         
         return $filename;
