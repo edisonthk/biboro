@@ -43,7 +43,7 @@ class AccountService {
 
     public function getRequestedUri() {
         if(Cookie::has(self::_REQUESTED_URI)) {
-            return Cookie::get(self::_REQUESTED_URI);    
+            return Cookie::get(self::_REQUESTED_URI);
         }
         return '/';
     }
@@ -51,9 +51,9 @@ class AccountService {
     public function getByUrlPath($urlPath) {
         $account = Account::where("url_path","=",$urlPath)->first();
         if(is_null($account)) {
-            throw new Exception\UserNotFound;    
+            throw new Exception\UserNotFound;
         }
-        
+
         return $account;
     }
 
@@ -153,7 +153,7 @@ class AccountService {
             $newFilename .= "-".$offset.".".$fileinfo["extension"];
             return $this->generateFilenameWithoutDuplicateInStoreAtFolder($newFilename, $storeAtFolder, $offset + 1);
         }
-        
+
         return $filename;
     }
 
@@ -164,12 +164,9 @@ class AccountService {
         if($request->has("code")) {
             $code = $request->get("code");
             $googleService->requestAccessToken($code);
-            
+
             $result = json_decode( $googleService->request( 'https://www.googleapis.com/oauth2/v1/userinfo' ), true );
 
-            $path = "/uploads/profiles";
-            $picture = $this->copyFileToLocal($result["picture"], public_path().$path);
-            $result["picture"] = Config::get("app.url").$path."/".$picture;
             return $result;
 
         }else if($request->has("error")) {
@@ -189,7 +186,7 @@ class AccountService {
         // $account = null;
 
         // if(is_null($account_id)) {
-            
+
         //     $account = $this->getAccountByGoogleId($result["id"]);
         // }else{
         //     $account = Account::find($account_id);
@@ -198,7 +195,7 @@ class AccountService {
         //         "email" => $account->email,
         //     ];
         // }
-        
+
 
         // if(is_null($account)){
         // 	// 初めてログインする人はデータベースに保存されます。
@@ -218,11 +215,11 @@ class AccountService {
         // }
 
         // $account->save();
-        
+
         // $result["id"] = $account->id;
         // $result["name"] = $account->name;
         // $result["email"] = $account->email;
-        
+
         // Session::put(self::USER_SESSION, $result);
 
         // $this->setRememberToken();
@@ -239,14 +236,19 @@ class AccountService {
         $account->email     = $input["email"];
         $account->google_id = empty($input["google_id"]) ? null : $input["google_id"];
 
+				if(array_key_exists("picture",$input)) {
+					$path = "/uploads/profiles";
+					$picture = $this->copyFileToLocal($input["picture"], public_path().$path);
+					$account->profile_image = Config::get("app.url").$path."/".$picture;
+				}
+
         return $this->save($account, $input);
     }
 
     public function save($account ,$input)
-    {   
+    {
         $account->name          = $input["name"];
         $account->gender        = array_get($input,"gender",is_null($account->gender) ? "" : $account->gender);
-        $account->profile_image = array_get($input,"profile_image",is_null($account->profile_image) ? "" : $account->profile_image);
         $account->locale        = array_get($input,"locate",is_null($account->locale) ? "" : $account->locale);
         $account->lang          = array_get($input,"lang", "ja");
         $account->level = 0;
