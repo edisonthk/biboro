@@ -54,6 +54,8 @@ class AccountController extends BaseController {
 
 						$this->workbook->create($account->name, "", $account->id);
 
+						Auth::login($account, true);
+
             return redirect(action("AuthController@getErrorAuth")."?type=".AuthController::TYPE_REGISTER."&email=".$account->email);
 
         } catch( OAuthAccessDenied $e ) {
