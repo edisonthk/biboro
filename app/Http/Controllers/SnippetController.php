@@ -9,6 +9,8 @@ use Biboro\Model\Tag;
 use Biboro\Model\Snippet;
 use Biboro\Http\Controllers\DraftController;
 
+use Biboro\Edisonthk\Exception\NotAllowedToEdit;
+
 
 class SnippetController extends BaseController {
 
@@ -36,6 +38,8 @@ class SnippetController extends BaseController {
         $this->workbook = $workbook;
         $this->reference = $reference;
         $this->notice = $notice;
+
+        $this->permissionDeniedJsonMessage = ["error" => "permission denied"];
 	}
 
 	/**
@@ -285,8 +289,6 @@ class SnippetController extends BaseController {
 			$snippet->lang 			= "jp";
 			$snippet->save();
 
-			$snippet->tagsave($request->get('tags'));
-
 			// destroy draft as real data is stored to database
 			DraftController::destroy($id);
 
@@ -309,10 +311,16 @@ class SnippetController extends BaseController {
 	{
 		//
 		$snippet = Snippet::find($id);
-		$snippet->delete();
+		if(is_null($snippet)) {
+            return Response::json("", 404);
+        }
 
-		DraftController::destroy($id);
-
+        try {
+            $this->snippet->delete($snippet);
+        }catch ( NotAllowedToEdit $e) {
+            return response()->json( $this->permissionDeniedJsonMessage , 403);
+        }
+		
 		\Session::flash('message', 'Successfully deleted the nerd!');
 		return \Response::json('snippet');
 	}

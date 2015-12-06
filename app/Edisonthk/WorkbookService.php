@@ -77,6 +77,10 @@ class WorkbookService {
             return $a->score < $b->score;
         });
 
+        foreach($result as $snippet) {
+            $this->snippet->beautifySnippetObject($snippet);
+        }
+
         return $result;
     }
 

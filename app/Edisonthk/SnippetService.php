@@ -95,9 +95,23 @@ class SnippetService {
         }
         
 		$snippet->readable_updated_at   = $this->convertToUserViewTimestamp($snippet->updated_at);
-		$snippet->editable              = (Auth::check() && Auth::id() == $snippet->account_id);
+		$snippet->editable              = $this->editable($snippet);
         
 	}
+
+    public function editable(Snippet $snippet) {
+        return Auth::check() && Auth::id() == $snippet->account_id;
+    }
+
+    public function delete($snippet) {
+
+        if(!$this->editable($snippet)) {
+            throw new Exception\NotAllowedToEdit;
+        }
+
+        $snippet->delete();
+        DraftController::destroy($snippet->id);
+    }
 
 	public function convertToUserViewTimestamp($timestamp){
 	    $d1 = new \DateTime($timestamp);
