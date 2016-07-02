@@ -17,7 +17,7 @@ return [
 
 	'debug' => env('APP_DEBUG'),
 
-    'app_url' => env('APP_DEBUG') ? env('DEBUG_URL', 'http://localhost:3000') : 'http://biboro.org',
+    'app_url' => env('APP_DEBUG') ? env('DEBUG_URL', 'http://localhost:3000') : 'http://biboro.edisonthk.com',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -30,7 +30,7 @@ return [
 	|
 	*/
 
-	'url' => ( env('APP_DEBUG') ? env('DEBUG_API_URL', 'http://localhost:8000') : 'http://www.biboro.org'),
+	'url' => ( env('APP_DEBUG') ? env('DEBUG_API_URL', 'http://localhost:8000') : 'http://biboro.edisonthk.com'),
 
 	/*
 	|--------------------------------------------------------------------------

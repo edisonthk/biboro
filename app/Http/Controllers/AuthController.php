@@ -107,16 +107,6 @@ class AuthController extends Controller
         return Response::json("Redirect to: ".Config::get("app.app_url"));
     }
 
-    public function oauth2callback(Request $request)
-    {
-        $validator = $this->account->handleOauth2callback($request);
-        if(!$validator["success"]) {
-            
-        }
-
-        $user = $this->account->getAccountByEmail($email);
-    }
-
     public function getErrorAuth(Request $request) 
     {
         $type = $request->get("type","");

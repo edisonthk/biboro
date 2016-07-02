@@ -158,7 +158,7 @@ class WorkbookController extends Controller
         try {
             $this->workbook->update($workbook, $title, $description);    
         }catch ( NotAllowedToEdit $e) {
-            return response()->json( $permissionDeniedJsonMessage , 403);
+            return response()->json( $this->permissionDeniedJsonMessage , 403);
         }
         
         return response()->json( $workbook ,200);

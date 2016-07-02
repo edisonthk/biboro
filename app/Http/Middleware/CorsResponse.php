@@ -16,8 +16,8 @@ class CorsResponse {
         $response = $next($request);
 
 				$listAllowed = [
-            'http://www.biboro.org',
-            'http://api.biboro.org',
+            'http://biboro.edisonthk.com',
+            'http://api.biboro.edisonthk.com',
         ];
 
 				if(env("APP_ENV") !== 'production') {
